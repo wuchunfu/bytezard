@@ -10,6 +10,13 @@
     <version>1.0.0-SNAPSHOT</version>
     <modules>
         <module>bytezard-common</module>
+        <module>bytezard-server</module>
+        <module>bytezard-storage</module>
+        <module>bytezard-metadata</module>
+        <module>bytezard-engine</module>
+        <module>bytezard-cli</module>
+        <module>bytezard-function</module>
+        <module>bytezard-parser</module>
     </modules>
 
 
