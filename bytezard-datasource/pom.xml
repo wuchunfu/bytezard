@@ -9,19 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bytezard-function</artifactId>
+    <artifactId>bytezard-datasource</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>bytezard-function-api</module>
-        <module>bytezard-function-plugins</module>
+        <module>bytezard-datasource-api</module>
+        <module>bytezard-datasource-plugins</module>
+        <module>bytezard-datasource-manager</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.simforce</groupId>
-            <artifactId>bytezard-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 
 </project>

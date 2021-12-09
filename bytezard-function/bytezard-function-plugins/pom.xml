@@ -3,23 +3,23 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>bytezard</artifactId>
+        <artifactId>bytezard-function</artifactId>
         <groupId>io.simforce</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bytezard-function</artifactId>
+    <artifactId>bytezard-function-plugins</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>bytezard-function-api</module>
-        <module>bytezard-function-plugins</module>
+
+        <module>bytezard-function-plugin-null-check</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>io.simforce</groupId>
-            <artifactId>bytezard-common</artifactId>
+            <artifactId>bytezard-function-api</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
