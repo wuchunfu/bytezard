@@ -17,5 +17,11 @@
         <module>bytezard-engine-manager</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.simforce</groupId>
+            <artifactId>bytezard-common</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
