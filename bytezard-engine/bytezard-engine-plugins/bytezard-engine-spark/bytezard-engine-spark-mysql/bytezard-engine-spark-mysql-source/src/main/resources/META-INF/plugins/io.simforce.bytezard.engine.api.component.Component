@@ -1,0 +1,1 @@
+mysql-sink=org.simfo.datura.sink.MysqlSink
