@@ -16,5 +16,16 @@
         <module>bytezard-connector-plugins</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.simforce.bytezard</groupId>
+            <artifactId>bytezard-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.simforce.bytezard</groupId>
+            <artifactId>bytezard-connector-api</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

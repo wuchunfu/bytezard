@@ -19,7 +19,7 @@ import scala.collection.Seq;
 import scopt.OptionParser;
 
 /**
- * DaturaBootstrap
+ * BytezardBootstrap
  */
 public class BytezardBootstrap {
 

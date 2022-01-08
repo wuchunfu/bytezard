@@ -29,7 +29,6 @@ import io.simforce.bytezard.common.utils.ClassUtils;
 import io.simforce.bytezard.common.utils.Holder;
 import io.simforce.bytezard.common.utils.UnsafeStringWriter;
 
-
 /**
  * PluginLoader
  */

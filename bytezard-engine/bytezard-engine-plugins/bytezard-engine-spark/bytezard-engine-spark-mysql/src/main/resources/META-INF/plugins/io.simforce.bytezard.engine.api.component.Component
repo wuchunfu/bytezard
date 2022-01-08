@@ -1,0 +1,2 @@
+mysql-sink=io.simforce.bytezard.engine.spark.mysql.sink.MysqlSink
+mysql-source=io.simforce.bytezard.engine.spark.mysql.sink.MysqlSource

@@ -11,7 +11,7 @@ import io.simforce.bytezard.common.config.ConfigRuntimeException;
 import io.simforce.bytezard.common.config.EnvConfig;
 import io.simforce.bytezard.common.spi.PluginLoader;
 import io.simforce.bytezard.common.utils.FileUtils;
-import io.simforce.bytezard.common.utils.JsonUtils;
+import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.engine.api.component.Component;
 import io.simforce.bytezard.engine.api.env.RuntimeEnvironment;
 
@@ -46,8 +46,8 @@ public class ConfigParser {
         logger.info("[INFO] Loading config file: " + configFile);
 
         String configStr = FileUtils.readFile(configFile);
-        BytezardConfiguration config = JsonUtils.fromJson(configStr,BytezardConfiguration.class);
-        logger.info("[INFO] parsed config file: " + JsonUtils.toJson(config));
+        BytezardConfiguration config = JSONUtils.parseObject(configStr,BytezardConfiguration.class);
+        logger.info("[INFO] parsed config file: " + JSONUtils.toJsonString(config));
         return config;
     }
 

@@ -10,6 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>bytezard-connector-plugins</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>bytezard-connector-jdbc</module>
+    </modules>
 
 
 </project>
