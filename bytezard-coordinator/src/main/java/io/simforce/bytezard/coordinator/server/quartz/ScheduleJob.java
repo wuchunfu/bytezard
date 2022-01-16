@@ -34,7 +34,7 @@ import com.google.common.collect.Maps;
 
 import io.simforce.bytezard.common.utils.DateUtils;
 import io.simforce.bytezard.common.utils.JSONUtils;
-import io.simforce.bytezard.coordinator.Constants;
+import io.simforce.bytezard.coordinator.CoordinatorConstants;
 import io.simforce.bytezard.coordinator.repository.entity.Command;
 import io.simforce.bytezard.coordinator.repository.entity.JobDefinition;
 import io.simforce.bytezard.coordinator.repository.entity.JobInstance;
@@ -68,8 +68,8 @@ public class ScheduleJob implements Job {
 
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
 
-        Long projectJobId = dataMap.getLong(Constants.PROJECT_JOB_ID);
-        Long projectId = dataMap.getLong(Constants.PROJECT_ID);
+        Long projectJobId = dataMap.getLong(CoordinatorConstants.PROJECT_JOB_ID);
+        Long projectId = dataMap.getLong(CoordinatorConstants.PROJECT_ID);
 
         LocalDateTime scheduleTime = DateUtils.date2LocalDateTime(context.getScheduledFireTime());
         LocalDateTime fireTime = DateUtils.date2LocalDateTime(context.getFireTime());

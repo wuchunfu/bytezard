@@ -63,6 +63,8 @@ public class ExecutionJob {
      */
     private String jobParameters;
 
+    private String bytezardConfiguration;
+
     /**
      * 租户编码
      */
@@ -99,7 +101,7 @@ public class ExecutionJob {
     private int status;
 
     /**
-     * 用户组
+     * 执行器组
      */
     private String executorGroup;
 
@@ -144,6 +146,7 @@ public class ExecutionJob {
                         String executeHost,
                         String jobUniqueId,
                         String jobParameters,
+                        String bytezardConfiguration,
                         String tenantCode,
                         String envFile,
                         Date submitTime,
@@ -169,6 +172,7 @@ public class ExecutionJob {
         this.executeHost = executeHost;
         this.jobUniqueId = jobUniqueId;
         this.jobParameters = jobParameters;
+        this.bytezardConfiguration = bytezardConfiguration;
         this.tenantCode = tenantCode;
         this.envFile = envFile;
         this.submitTime = submitTime;
@@ -271,7 +275,7 @@ public class ExecutionJob {
         return applicationId;
     }
 
-    public void setApplicationIds(String applicationIds) {
+    public void setApplicationId(String applicationId) {
         this.applicationId = applicationId;
     }
 
@@ -281,6 +285,14 @@ public class ExecutionJob {
 
     public void setJobParameters(String jobParameters) {
         this.jobParameters = jobParameters;
+    }
+
+    public String getBytezardConfiguration() {
+        return bytezardConfiguration;
+    }
+
+    public void setBytezardConfiguration(String bytezardConfiguration) {
+        this.bytezardConfiguration = bytezardConfiguration;
     }
 
     public String getTenantCode() {

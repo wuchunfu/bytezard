@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import io.simforce.bytezard.coordinator.server.channel.ClientChannel;
 
-
 /**
  * @author zixi0825
  */

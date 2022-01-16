@@ -100,13 +100,6 @@ public class JobExecuteManager {
         logger.info("job response operator start");
     }
 
-    public void addKillCommand(Long jobInstanceId){
-        CommandContext commandContext = new CommandContext();
-        commandContext.setCommandCode(CommandCode.JOB_KILL_REQUEST);
-        commandContext.setJobInstanceId(jobInstanceId);
-        jobQueue.offer(commandContext);
-    }
-
     public boolean addExecuteCommand(ExecutionJob executionJob){
         logger.info("put into wait to send {}", JSONUtils.toJSONString(executionJob));
         unFinishedJobMap.put(executionJob.getJobInstanceId(), executionJob);
@@ -120,21 +113,28 @@ public class JobExecuteManager {
         //记录该任务从哪个client传过来，会将结果发送回该client
     }
 
+    public void addKillCommand(Long jobInstanceId){
+        CommandContext commandContext = new CommandContext();
+        commandContext.setCommandCode(CommandCode.JOB_KILL_REQUEST);
+        commandContext.setJobInstanceId(jobInstanceId);
+        jobQueue.offer(commandContext);
+    }
+
     public void putJobInstanceId2ClientIpMap(Long jobInstanceId,String ip){
         this.jobInstanceId2ClientIp.put(jobInstanceId,ip);
     }
 
     public void putUnStartedJobs(List<ExecutionJob> executionJobs){
-        if(executionJobs != null){
-            for(ExecutionJob executionJob : executionJobs){
+        if (executionJobs != null) {
+            for (ExecutionJob executionJob : executionJobs) {
                 addExecuteCommand(executionJob);
             }
         }
     }
 
-    public void putUnFinishedJobs(List<ExecutionJob> executionJobs){
-        if(executionJobs != null){
-            for(ExecutionJob executionJob : executionJobs){
+    public void putUnFinishedJobs(List<ExecutionJob> executionJobs) {
+        if (executionJobs != null) {
+            for (ExecutionJob executionJob : executionJobs) {
                 unFinishedJobMap.put(executionJob.getJobInstanceId(), executionJob);
             }
         }

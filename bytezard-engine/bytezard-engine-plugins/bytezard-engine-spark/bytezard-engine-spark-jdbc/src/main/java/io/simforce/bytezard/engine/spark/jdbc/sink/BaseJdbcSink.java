@@ -15,7 +15,7 @@ import io.simforce.bytezard.common.config.CheckResult;
 import io.simforce.bytezard.common.config.Config;
 import io.simforce.bytezard.engine.api.env.RuntimeEnvironment;
 import io.simforce.bytezard.engine.spark.core.SparkRuntimeEnvironment;
-import io.simforce.bytezard.engine.spark.core.batch.SparkBatchSink;
+import io.simforce.bytezard.engine.api.spark.batch.SparkBatchSink;
 
 
 /**

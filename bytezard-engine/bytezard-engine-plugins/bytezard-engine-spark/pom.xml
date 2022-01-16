@@ -15,6 +15,8 @@
         <module>bytezard-engine-spark-core</module>
         <module>bytezard-engine-spark-jdbc</module>
         <module>bytezard-engine-spark-mysql</module>
+        <module>bytezard-engine-spark-executor</module>
+        <module>bytezard-engine-spark-api</module>
     </modules>
 
 

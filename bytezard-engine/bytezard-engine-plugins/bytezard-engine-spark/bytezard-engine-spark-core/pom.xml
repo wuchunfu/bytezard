@@ -35,8 +35,9 @@
 
         <dependency>
             <groupId>io.simforce.bytezard</groupId>
-            <artifactId>bytezard-engine-api</artifactId>
+            <artifactId>bytezard-engine-core</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

@@ -24,9 +24,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 
-/**
- * DaturaConfiguration
- */
 public class BytezardConfiguration implements IConfig {
 
     @JsonProperty("name")
@@ -122,7 +119,7 @@ public class BytezardConfiguration implements IConfig {
 
     @Override
     public String toString() {
-        return "DaturaConfiguration{" +
+        return "BytezardConfiguration{" +
                 "name='" + name + '\'' +
                 ", envConfig=" + envConfig +
                 ", sourceParameters=" + sourceParameters +

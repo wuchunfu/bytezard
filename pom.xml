@@ -11,12 +11,9 @@
     <modules>
         <module>bytezard-common</module>
         <module>bytezard-server</module>
-        <module>bytezard-metadata</module>
         <module>bytezard-engine</module>
         <module>bytezard-cli</module>
         <module>bytezard-function</module>
-        <module>bytezard-parser</module>
-        <module>bytezard-core</module>
         <module>bytezard-connector</module>
         <module>bytezard-ui</module>
         <module>bytezard-client</module>
@@ -73,6 +70,8 @@
         <commons.lang3.version>3.5</commons.lang3.version>
         <jersey.version>1.19</jersey.version>
         <jetty.version>8.2.0.v20160908</jetty.version>
+        <commons.io.version>2.4</commons.io.version>
+        <jcommander.version>1.81</jcommander.version>
     </properties>
 
     <dependencyManagement>
@@ -81,6 +80,18 @@
             <dependency>
                 <groupId>io.simforce.bytezard</groupId>
                 <artifactId>bytezard-engine-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.simforce.bytezard</groupId>
+                <artifactId>bytezard-engine-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.simforce.bytezard</groupId>
+                <artifactId>bytezard-engine-executor</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -448,6 +459,17 @@
                 <version>${jetty.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.beust</groupId>
+                <artifactId>jcommander</artifactId>
+                <version>${jcommander.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

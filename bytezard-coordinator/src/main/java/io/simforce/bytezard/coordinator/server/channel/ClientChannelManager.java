@@ -17,18 +17,18 @@ import io.simforce.bytezard.remote.utils.Host;
  */
 public class ClientChannelManager {
 
-    private Logger logger = LoggerFactory.getLogger(ClientChannelManager.class);
+    private final Logger logger = LoggerFactory.getLogger(ClientChannelManager.class);
 
-    private ConcurrentHashMap<Host,ClientChannel> executors =
+    private final ConcurrentHashMap<Host,ClientChannel> executors =
             new ConcurrentHashMap<>();
 
-    private ConcurrentHashMap<Host,ClientChannel> clients =
+    private final ConcurrentHashMap<Host,ClientChannel> clients =
             new ConcurrentHashMap<>();
 
-    private ConcurrentHashMap<String,ClientChannel> ip2Executors =
+    private final ConcurrentHashMap<String,ClientChannel> ip2Executors =
             new ConcurrentHashMap<>();
 
-    private ConcurrentHashMap<String,ClientChannel> ip2Clients =
+    private final ConcurrentHashMap<String,ClientChannel> ip2Clients =
             new ConcurrentHashMap<>();
 
     private ClientChannelManager(){}

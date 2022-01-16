@@ -7,7 +7,7 @@ public class ProcessResult {
 
     private Integer exitStatusCode;
 
-    private String applicationIds;
+    private String applicationId;
 
     private Integer processId;
 
@@ -24,12 +24,12 @@ public class ProcessResult {
         this.exitStatusCode = exitStatusCode;
     }
 
-    public String getApplicationIds() {
-        return applicationIds;
+    public String getApplicationId() {
+        return applicationId;
     }
 
-    public void setApplicationIds(String applicationIds) {
-        this.applicationIds = applicationIds;
+    public void setApplicationId(String applicationId) {
+        this.applicationId = applicationId;
     }
 
     public Integer getProcessId() {
