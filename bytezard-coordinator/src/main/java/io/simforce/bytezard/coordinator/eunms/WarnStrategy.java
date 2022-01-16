@@ -16,6 +16,8 @@
  */
 package io.simforce.bytezard.coordinator.eunms;
 
+import io.simforce.bytezard.common.enums.BaseEnum;
+
 /**
  * failure policy when some task node failed.
  */

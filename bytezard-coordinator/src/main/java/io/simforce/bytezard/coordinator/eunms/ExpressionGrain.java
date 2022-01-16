@@ -1,5 +1,7 @@
 package io.simforce.bytezard.coordinator.eunms;
 
+import io.simforce.bytezard.common.enums.BaseEnum;
+
 /**
  * @author zixi0825
  */

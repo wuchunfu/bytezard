@@ -1,5 +1,7 @@
 package io.simforce.bytezard.coordinator.eunms;
 
+import io.simforce.bytezard.common.enums.BaseEnum;
+
 public enum JobType implements BaseEnum {
     /**
      * 0 SHELL

@@ -8,10 +8,15 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * FileUtils
  */
 public class FileUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
     private FileUtils() {
         throw new UnsupportedOperationException("Construct JdbcUtils");
@@ -37,5 +42,45 @@ public class FileUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * create directory and user
+     * @param execLocalPath execute local path
+     * @param userName user name
+     * @throws IOException errors
+     */
+    public static void createWorkDirAndUserIfAbsent(String execLocalPath, String userName) throws IOException{
+        //if work dir exists, first delete
+        File execLocalPathFile = new File(execLocalPath);
+
+        if (execLocalPathFile.exists()){
+            org.apache.commons.io.FileUtils.forceDelete(execLocalPathFile);
+        }
+
+        //create work dir
+        org.apache.commons.io.FileUtils.forceMkdir(execLocalPathFile);
+        logger.info("create dir success {}" , execLocalPath);
+
+
+        //if not exists this user,then create
+        if (!OSUtils.getUserList().contains(userName)){
+            OSUtils.createUser(userName);
+        }
+        logger.info("create user name success {}", userName);
+    }
+
+    public static String getJobExecDir(String jobType, long jobInstanceId) {
+        String fileName = String.format(
+                "%s/exec/job/%s/%s",
+                "/bytezard",
+                jobType,
+                jobInstanceId);
+        File file = new File(fileName);
+        if (!file.getParentFile().exists()){
+            file.getParentFile().mkdirs();
+        }
+
+        return fileName;
     }
 }

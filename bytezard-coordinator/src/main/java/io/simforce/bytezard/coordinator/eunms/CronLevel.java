@@ -1,10 +1,12 @@
 package io.simforce.bytezard.coordinator.eunms;
 
+import io.simforce.bytezard.common.enums.BaseEnum;
+
 /**
  * @author simfo
  * @date 2019/9/3 11:20
  */
-public enum CronLevel implements BaseEnum{
+public enum CronLevel implements BaseEnum {
 
     /**
      * crontab grain level

@@ -25,7 +25,7 @@ import io.simforce.bytezard.common.entity.ExecutionJob;
 import io.simforce.bytezard.common.utils.Stopper;
 import io.simforce.bytezard.common.utils.ThreadUtils;
 import io.simforce.bytezard.coordinator.repository.entity.JobInstance;
-import io.simforce.bytezard.coordinator.eunms.ExecutionStatus;
+import io.simforce.bytezard.common.enums.ExecutionStatus;
 import io.simforce.bytezard.coordinator.exception.ExecuteJobException;
 import io.simforce.bytezard.coordinator.repository.module.BytezardCoordinatorInjector;
 import io.simforce.bytezard.coordinator.server.channel.ClientChannel;

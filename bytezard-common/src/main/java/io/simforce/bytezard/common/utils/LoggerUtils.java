@@ -52,4 +52,15 @@ public class LoggerUtils {
                 jobType,
                 jobInstanceId);
     }
+
+    public static String buildJobUniqueId(String affix,
+                                          String jobType,
+                                          long jobInstanceId){
+        // - [JobUniqueId=JOB_79_4084_15210]
+        return String.format(" - %s-%s-%s-%s]",
+                JOB_UNIQUE_ID_LOG_FORMAT,
+                affix,
+                jobType,
+                jobInstanceId);
+    }
 }

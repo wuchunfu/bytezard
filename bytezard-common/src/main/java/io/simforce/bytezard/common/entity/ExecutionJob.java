@@ -19,6 +19,11 @@ public class ExecutionJob {
     private String jobName;
 
     /**
+     * 任务名称
+     */
+    private String engineType;
+
+    /**
      * 任务的JSON 字符串
      */
     private String jobJson;
@@ -139,6 +144,7 @@ public class ExecutionJob {
 
     public ExecutionJob(long jobInstanceId,
                         String jobName,
+                        String engineType,
                         String jobJson,
                         String executePath,
                         String logPath,
@@ -165,6 +171,7 @@ public class ExecutionJob {
                         Date modifyTime) {
         this.jobInstanceId = jobInstanceId;
         this.jobName = jobName;
+        this.engineType = engineType;
         this.jobJson = jobJson;
         this.executePath = executePath;
         this.logPath = logPath;
@@ -213,6 +220,14 @@ public class ExecutionJob {
 
     public void setJobName(String jobName) {
         this.jobName = jobName;
+    }
+
+    public String getEngineType() {
+        return engineType;
+    }
+
+    public void setEngineType(String engineType) {
+        this.engineType = engineType;
     }
 
     public String getJobJson() {

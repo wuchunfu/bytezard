@@ -1,4 +1,4 @@
-package io.simforce.bytezard.coordinator.eunms;
+package io.simforce.bytezard.common.enums;
 
 import org.apache.commons.lang3.StringUtils;
 

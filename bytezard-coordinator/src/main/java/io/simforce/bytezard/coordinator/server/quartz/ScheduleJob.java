@@ -39,7 +39,7 @@ import io.simforce.bytezard.coordinator.repository.entity.Command;
 import io.simforce.bytezard.coordinator.repository.entity.JobDefinition;
 import io.simforce.bytezard.coordinator.repository.entity.JobInstance;
 import io.simforce.bytezard.coordinator.eunms.CommandType;
-import io.simforce.bytezard.coordinator.eunms.ExecutionStatus;
+import io.simforce.bytezard.common.enums.ExecutionStatus;
 import io.simforce.bytezard.coordinator.repository.module.BytezardCoordinatorInjector;
 import io.simforce.bytezard.coordinator.repository.service.impl.JobExternalService;
 

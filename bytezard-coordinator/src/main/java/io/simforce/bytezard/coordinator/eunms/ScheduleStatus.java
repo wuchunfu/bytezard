@@ -1,9 +1,11 @@
 package io.simforce.bytezard.coordinator.eunms;
 
+import io.simforce.bytezard.common.enums.BaseEnum;
+
 /**
  * @author zixi0825
  */
-public enum ScheduleStatus implements  BaseEnum{
+public enum ScheduleStatus implements BaseEnum {
 
     /**
      * 0 file, 1 udf

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.simforce.bytezard.coordinator.eunms;
+package io.simforce.bytezard.common.enums;
 
 import java.util.HashMap;
 

@@ -68,9 +68,9 @@
         <quartz.version>2.2.3</quartz.version>
         <commons.lang.version>2.3</commons.lang.version>
         <commons.lang3.version>3.5</commons.lang3.version>
+        <commons.io.version>2.4</commons.io.version>
         <jersey.version>1.19</jersey.version>
         <jetty.version>8.2.0.v20160908</jetty.version>
-        <commons.io.version>2.4</commons.io.version>
         <jcommander.version>1.81</jcommander.version>
     </properties>
 

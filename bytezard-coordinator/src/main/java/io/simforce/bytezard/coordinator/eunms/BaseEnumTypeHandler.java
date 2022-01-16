@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import io.simforce.bytezard.common.enums.BaseEnum;
+
 public class BaseEnumTypeHandler extends BaseTypeHandler<BaseEnum> {
 
     private Class<BaseEnum> type;

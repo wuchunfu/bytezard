@@ -24,7 +24,7 @@ public class SparkEngineExecutor implements EngineExecutor {
         BytezardConfiguration configuration =
                 JSONUtils.parseObject(executionJob.getBytezardConfiguration(),BytezardConfiguration.class);
         configurationParser.parse(configuration);
-        //将标准参数转换为引擎可执行参数
+        //将标准参数转换为引擎可执行参数,生成一个application.conf
         //执行检查任务
     }
 
