@@ -1,13 +1,13 @@
 package io.simforce.bytezard.executor.cache;
 
 import io.simforce.bytezard.common.entity.TaskRequest;
-import io.simforce.bytezard.executor.runner.JobRunner;
+import io.simforce.bytezard.executor.runner.TaskRunner;
 
 public class JobExecutionContext {
 
     private TaskRequest taskRequest;
 
-    private JobRunner jobRunner;
+    private TaskRunner taskRunner;
 
     public TaskRequest getTaskRequest() {
         return taskRequest;
@@ -17,11 +17,11 @@ public class JobExecutionContext {
         this.taskRequest = taskRequest;
     }
 
-    public JobRunner getJobRunner() {
-        return jobRunner;
+    public TaskRunner getTaskRunner() {
+        return taskRunner;
     }
 
-    public void setJobRunner(JobRunner jobRunner) {
-        this.jobRunner = jobRunner;
+    public void setTaskRunner(TaskRunner taskRunner) {
+        this.taskRunner = taskRunner;
     }
 }

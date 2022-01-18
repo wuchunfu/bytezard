@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,7 +17,7 @@ import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.executor.cache.JobExecutionCache;
 import io.simforce.bytezard.executor.cache.JobExecutionContext;
 import io.simforce.bytezard.executor.config.ExecutorConfiguration;
-import io.simforce.bytezard.executor.runner.JobRunner;
+import io.simforce.bytezard.executor.runner.TaskRunner;
 import io.simforce.bytezard.remote.command.*;
 import io.simforce.bytezard.remote.processor.NettyEventProcessor;
 import io.simforce.bytezard.remote.utils.JsonSerializer;
@@ -86,13 +85,13 @@ public class JobExecuteProcessor implements NettyEventProcessor {
             taskRequest.setStartTime(LocalDateTime.now());
             doAck(taskRequest);
 
-            JobRunner jobRunner = new JobRunner(taskRequest, jobCallbackService);
+            TaskRunner taskRunner = new TaskRunner(taskRequest, jobCallbackService);
             JobExecutionContext jobExecutionContext = new JobExecutionContext();
             jobExecutionContext.setTaskRequest(taskRequest);
-            jobExecutionContext.setJobRunner(jobRunner);
+            jobExecutionContext.setTaskRunner(taskRunner);
             jobExecutionCache.cache(jobExecutionContext);
 
-            executorService.submit(jobRunner);
+            executorService.submit(taskRunner);
         }
 
     }

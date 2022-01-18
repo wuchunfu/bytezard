@@ -7,15 +7,15 @@ public class JobParameter {
 
     private String engineType;
 
-    private Map<String,String> engineParameter;
+    private Map<String,Object> engineParameter;
 
-    private List<String> connectorParameter;
+    private List<ConnectorParameter> connectorParameter;
 
     private String functionType;
 
-    private Map<String,String> functionParameter;
+    private Map<String,Object> functionParameter;
 
-    private Map<String,String> otherParameter;
+    private Map<String,Object> otherParameter;
 
     public String getEngineType() {
         return engineType;
@@ -25,19 +25,19 @@ public class JobParameter {
         this.engineType = engineType;
     }
 
-    public Map<String, String> getEngineParameter() {
+    public Map<String, Object> getEngineParameter() {
         return engineParameter;
     }
 
-    public void setEngineParameter(Map<String, String> engineParameter) {
+    public void setEngineParameter(Map<String, Object> engineParameter) {
         this.engineParameter = engineParameter;
     }
 
-    public List<String> getConnectorParameter() {
+    public List<ConnectorParameter> getConnectorParameter() {
         return connectorParameter;
     }
 
-    public void setConnectorParameter(List<String> connectorParameter) {
+    public void setConnectorParameter(List<ConnectorParameter> connectorParameter) {
         this.connectorParameter = connectorParameter;
     }
 
@@ -49,19 +49,19 @@ public class JobParameter {
         this.functionType = functionType;
     }
 
-    public Map<String, String> getFunctionParameter() {
+    public Map<String, Object> getFunctionParameter() {
         return functionParameter;
     }
 
-    public void setFunctionParameter(Map<String, String> functionParameter) {
+    public void setFunctionParameter(Map<String, Object> functionParameter) {
         this.functionParameter = functionParameter;
     }
 
-    public Map<String, String> getOtherParameter() {
+    public Map<String, Object> getOtherParameter() {
         return otherParameter;
     }
 
-    public void setOtherParameter(Map<String, String> otherParameter) {
+    public void setOtherParameter(Map<String, Object> otherParameter) {
         this.otherParameter = otherParameter;
     }
 }

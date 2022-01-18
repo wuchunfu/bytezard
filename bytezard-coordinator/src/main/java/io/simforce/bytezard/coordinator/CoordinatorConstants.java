@@ -49,13 +49,9 @@ public class CoordinatorConstants {
     public static final String QUARTZ_INSTANCENAME = "DolphinScheduler";
     public static final String QUARTZ_INSTANCEID = "AUTO";
     public static final String QUARTZ_ACQUIRETRIGGERSWITHINLOCK = "true";
-
     public static final String QUARTZ_JOB_GROUP_PREFIX = "job_group";
-
     public static final String QUARTZ_JOB_PREFIX = "job";
-
     public static final String DATASOURCE_DRIVER_CLASS_NAME = "datasource.driver-class-name";
-
     public static final String ORG_POSTGRESQL_DRIVER = "org.postgresql.Driver";
 
     /**

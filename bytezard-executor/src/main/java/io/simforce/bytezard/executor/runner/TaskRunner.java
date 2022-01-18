@@ -1,7 +1,6 @@
 package io.simforce.bytezard.executor.runner;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import io.simforce.bytezard.common.entity.TaskRequest;
@@ -15,9 +14,9 @@ import io.simforce.bytezard.remote.command.JobExecuteResponseCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JobRunner implements Runnable {
+public class TaskRunner implements Runnable {
 
-    private final Logger logger = LoggerFactory.getLogger(JobRunner.class);
+    private final Logger logger = LoggerFactory.getLogger(TaskRunner.class);
 
     private final TaskRequest taskRequest;
 
@@ -25,7 +24,7 @@ public class JobRunner implements Runnable {
 
     private EngineExecutor engineExecutor;
 
-    public JobRunner(TaskRequest taskRequest, JobCallbackService jobCallbackService){
+    public TaskRunner(TaskRequest taskRequest, JobCallbackService jobCallbackService){
         this.jobCallbackService = jobCallbackService;
         this.taskRequest = taskRequest;
     }

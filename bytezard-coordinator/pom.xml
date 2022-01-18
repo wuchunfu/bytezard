@@ -139,6 +139,19 @@
             <groupId>org.eclipse.jetty.aggregate</groupId>
             <artifactId>jetty-all-server</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.simforce.bytezard</groupId>
+            <artifactId>bytezard-function-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.simforce.bytezard</groupId>
+            <artifactId>bytezard-function-null-check</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

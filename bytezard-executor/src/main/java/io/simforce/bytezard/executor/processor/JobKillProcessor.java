@@ -2,7 +2,7 @@ package io.simforce.bytezard.executor.processor;
 
 import io.simforce.bytezard.executor.cache.JobExecutionCache;
 import io.simforce.bytezard.executor.cache.JobExecutionContext;
-import io.simforce.bytezard.executor.runner.JobRunner;
+import io.simforce.bytezard.executor.runner.TaskRunner;
 import io.simforce.bytezard.remote.command.Command;
 import io.simforce.bytezard.remote.command.CommandCode;
 import io.simforce.bytezard.remote.command.JobKillRequestCommand;
@@ -35,8 +35,8 @@ public class JobKillProcessor implements NettyEventProcessor {
         JobExecutionContext jobExecutionContext = jobExecutionCache.getById(taskId);
 
         if (jobExecutionContext != null){
-            JobRunner jobRunner = jobExecutionContext.getJobRunner();
-            jobRunner.kill();
+            TaskRunner taskRunner = jobExecutionContext.getTaskRunner();
+            taskRunner.kill();
         }
 
     }
