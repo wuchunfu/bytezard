@@ -16,15 +16,15 @@ public class JobExecutionCache {
         return Singleton.instance;
     }
 
-    public JobExecutionContext getById(Long jobInstanceId){
-        return cache.get(jobInstanceId);
+    public JobExecutionContext getById(Long taskId){
+        return cache.get(taskId);
     }
 
     public void cache(JobExecutionContext jobExecutionContext){
-        cache.put(jobExecutionContext.getExecutionJob().getJobInstanceId(), jobExecutionContext);
+        cache.put(jobExecutionContext.getTaskRequest().getTaskId(), jobExecutionContext);
     }
 
-    public void remove(Long jobInstanceId){
-        cache.remove(jobInstanceId);
+    public void remove(Long taskId){
+        cache.remove(taskId);
     }
 }

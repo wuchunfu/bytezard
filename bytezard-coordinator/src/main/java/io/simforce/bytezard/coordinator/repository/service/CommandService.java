@@ -2,9 +2,6 @@ package io.simforce.bytezard.coordinator.repository.service;
 
 import io.simforce.bytezard.coordinator.repository.entity.Command;
 
-/**
- * @author zixi0825
- */
 public interface CommandService  {
 
     /**

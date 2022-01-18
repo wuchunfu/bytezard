@@ -11,7 +11,7 @@ import io.simforce.bytezard.remote.command.CommandCode;
 import io.simforce.bytezard.remote.command.log.GetLogBytesRequestCommand;
 import io.simforce.bytezard.remote.command.log.GetLogBytesResponseCommand;
 import io.simforce.bytezard.remote.processor.NettyEventProcessor;
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class GetLogBytesProcessor implements NettyEventProcessor {
                 String.format("invalid command type : %s", command.getCode()));
 
         GetLogBytesRequestCommand getLogBytesRequestCommand =
-                FastJsonSerializer.deserialize(command.getBody(),GetLogBytesRequestCommand.class);
+                JsonSerializer.deserialize(command.getBody(),GetLogBytesRequestCommand.class);
         GetLogBytesResponseCommand getLogBytesResponseCommand = new GetLogBytesResponseCommand();
         getLogBytesResponseCommand.setMsg(getFileContentBytes(getLogBytesRequestCommand.getPath()));
         channel.writeAndFlush(getLogBytesResponseCommand.convert2Command(command.getOpaque()));

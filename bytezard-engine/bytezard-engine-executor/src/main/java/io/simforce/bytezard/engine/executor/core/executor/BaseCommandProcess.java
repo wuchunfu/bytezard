@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import io.simforce.bytezard.common.CommonConstants;
 import io.simforce.bytezard.common.config.Configurations;
 import io.simforce.bytezard.common.config.CoreConfig;
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.entity.ProcessResult;
 import io.simforce.bytezard.common.utils.LoggerUtils;
 import io.simforce.bytezard.common.utils.ProcessUtils;
@@ -56,7 +56,7 @@ public abstract class BaseCommandProcess {
     /**
      * execution job
      */
-    protected ExecutionJob executionJob;
+    protected TaskRequest taskRequest;
 
     /**
      *  logger
@@ -72,10 +72,10 @@ public abstract class BaseCommandProcess {
 
     public BaseCommandProcess(Consumer<List<String>> logHandler,
                               Logger logger,
-                              ExecutionJob executionJob,
+                              TaskRequest taskRequest,
                               Properties properties){
         this.logHandler = logHandler;
-        this.executionJob = executionJob;
+        this.taskRequest = taskRequest;
         this.logger = logger;
         this.logBuffer = Collections.synchronizedList(new ArrayList<>());
         this.configurations = new Configurations(properties);
@@ -109,7 +109,7 @@ public abstract class BaseCommandProcess {
                 exitStatusCode = process.exitValue();
 
                 // set appIds
-                List<String> appIds = getApplicationId(executionJob.getLogPath());
+                List<String> appIds = getApplicationId(taskRequest.getLogPath());
                 result.setApplicationId(String.join(CommonConstants.COMMA, appIds));
 
                 // SHELL job state
@@ -120,9 +120,9 @@ public abstract class BaseCommandProcess {
                     result.setExitStatusCode(YarnUtils.isSuccessOfYarnState(appIds) ? EXIT_CODE_SUCCESS : EXIT_CODE_FAILURE);
                 }
 
-                logger.info("process has exited, work dir:{}, pid:{} ,exitStatusCode:{}", executionJob.getExecutePath(), pid,exitStatusCode);
+                logger.info("process has exited, work dir:{}, pid:{} ,exitStatusCode:{}", taskRequest.getExecutePath(), pid,exitStatusCode);
             } else {
-                logger.warn("process timeout, work dir:{}, pid:{}", executionJob.getExecutePath(), pid);
+                logger.warn("process timeout, work dir:{}, pid:{}", taskRequest.getExecutePath(), pid);
             }
 
         } catch (InterruptedException e) {
@@ -146,14 +146,14 @@ public abstract class BaseCommandProcess {
         //init process builder
         ProcessBuilder processBuilder = new ProcessBuilder();
         // setting up a working directory
-        processBuilder.directory(new File(executionJob.getExecutePath()));
+        processBuilder.directory(new File(taskRequest.getExecutePath()));
         // merge error information to standard output stream
         processBuilder.redirectErrorStream(true);
         // setting up user to run commands
         List<String> command = new LinkedList<>();
         command.add("sudo");
         command.add("-u");
-        command.add(executionJob.getTenantCode());
+        command.add(taskRequest.getTenantCode());
         command.add(commandInterpreter());
         command.addAll(commandOptions());
         command.add(commandFile);
@@ -277,8 +277,8 @@ public abstract class BaseCommandProcess {
      * @return remain time
      */
     private long getRemainTime() {
-        long usedTime = (System.currentTimeMillis() - executionJob.getStartTime().getTime()) / 1000;
-        long remainTime = executionJob.getTimeout() - usedTime;
+        long usedTime = (System.currentTimeMillis() - taskRequest.getStartTime().getTime()) / 1000;
+        long remainTime = taskRequest.getTimeout() - usedTime;
 
         if (remainTime < 0) {
             throw new RuntimeException("job execution time out");
@@ -330,7 +330,7 @@ public abstract class BaseCommandProcess {
                 // sudo -u user command to run command
                 String cmd = String.format("sudo kill %d", processId);
 
-                logger.info("soft kill job:{}, process id:{}, cmd:{}", executionJob.getJobName(), processId, cmd);
+                logger.info("soft kill job:{}, process id:{}, cmd:{}", taskRequest.getJobName(), processId, cmd);
 
                 Runtime.getRuntime().exec(cmd);
             } catch (IOException e) {
@@ -350,7 +350,7 @@ public abstract class BaseCommandProcess {
             try {
                 String cmd = String.format("sudo kill -9 %d", processId);
 
-                logger.info("hard kill job:{}, process id:{}, cmd:{}", executionJob.getJobName(), processId, cmd);
+                logger.info("hard kill job:{}, process id:{}, cmd:{}", taskRequest.getJobName(), processId, cmd);
 
                 Runtime.getRuntime().exec(cmd);
             } catch (IOException e) {
@@ -364,7 +364,7 @@ public abstract class BaseCommandProcess {
      * @param process process
      */
     private void parseProcessOutput(Process process) {
-        String threadLoggerInfoName = String.format(LoggerUtils.JOB_LOGGER_THREAD_NAME + "-%s", executionJob.getJobName());
+        String threadLoggerInfoName = String.format(LoggerUtils.JOB_LOGGER_THREAD_NAME + "-%s", taskRequest.getJobName());
         ExecutorService parseProcessOutputExecutorService = ThreadUtils.newDaemonSingleThreadExecutor(threadLoggerInfoName);
         parseProcessOutputExecutorService.submit(new Runnable(){
             @Override
@@ -408,7 +408,7 @@ public abstract class BaseCommandProcess {
 //                SpringApplicationContext
 //                        .getBean(JobCallbackService.class)
 //                        .send(executionJob.getProcessId(),
-//                              new JobReportInfoCommand(executionJob.getJobInstanceId(),applicationIds).convert2Command());
+//                              new JobReportInfoCommand(executionJob.getTaskId(),applicationIds).convert2Command());
 //            }
 
             logBuffer.clear();

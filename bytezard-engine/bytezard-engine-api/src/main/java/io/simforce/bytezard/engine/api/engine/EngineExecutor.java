@@ -2,7 +2,7 @@ package io.simforce.bytezard.engine.api.engine;
 
 import org.slf4j.Logger;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.entity.ProcessResult;
 import io.simforce.bytezard.common.spi.SPI;
 
@@ -54,11 +54,11 @@ public interface EngineExecutor {
      * 设置execution job
      * @param job
      */
-    void setExecutionJob(ExecutionJob job);
+    void setTaskRequest(TaskRequest job);
 
     /**
      * 获取execution job
      * @return
      */
-    ExecutionJob getExecutionJob();
+    TaskRequest getTaskRequest();
 }

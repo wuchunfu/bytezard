@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.inject.Injector;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.coordinator.repository.module.BytezardCoordinatorInjector;
 import io.simforce.bytezard.coordinator.server.recovery.PersistenceEngine;
 import io.simforce.bytezard.coordinator.repository.service.ExecutionJobService;
@@ -22,9 +22,8 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
     }
 
     @Override
-    public long persist(String name, ExecutionJob job) {
-        this.executionJobService.save(job);
-        return job.getJobInstanceId();
+    public long persist(String name, TaskRequest job) {
+        return 0;
     }
 
     @Override
@@ -33,23 +32,23 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
     }
 
     @Override
-    public void update(String name,ExecutionJob job) {
+    public void update(String name, TaskRequest job) {
         this.executionJobService.updateById(job);
     }
 
     @Override
-    public List<ExecutionJob> getUnStartedJobs() {
+    public List<TaskRequest> getUnStartedJobs() {
         return this.executionJobService.getUnStartedJobs();
     }
 
     @Override
-    public List<ExecutionJob> getUnFinishedJobs() {
+    public List<TaskRequest> getUnFinishedJobs() {
         return this.executionJobService.getUnfinishedJobs();
 
     }
 
     @Override
-    public ExecutionJob getById(long id) {
+    public TaskRequest getById(long id) {
         return this.executionJobService.getById(id);
     }
 }

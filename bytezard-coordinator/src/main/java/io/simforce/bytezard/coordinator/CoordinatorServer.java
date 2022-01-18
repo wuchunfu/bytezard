@@ -71,8 +71,8 @@ public class CoordinatorServer {
             CoordinatorConfiguration configuration = CoordinatorConfiguration.getInstance();
             configuration.parse(configPath);
 
-            CoordinatorServer masterServer = new CoordinatorServer(configuration);
-            masterServer.initializeAndStart();
+            CoordinatorServer coordinatorServer = new CoordinatorServer(configuration);
+            coordinatorServer.initializeAndStart();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class CoordinatorServer {
     }
 
     private void initializeAndStart() throws Exception {
-        logger.info("master server start");
+        logger.info("coordinator server start");
 
         ZooKeeperClient.getInstance().buildClient(
                 new ZooKeeperConfig(this.configuration.getString(
@@ -161,7 +161,7 @@ public class CoordinatorServer {
                 return;
             }
 
-            logger.info("master server is stopping ..., cause : {}", cause);
+            logger.info("coordinator server is stopping ..., cause : {}", cause);
 
             // set stop signal is true
             Stopper.stop();
@@ -177,7 +177,7 @@ public class CoordinatorServer {
             this.jobExecuteManager.close();
 
         } catch (Exception e) {
-            logger.error("master server stop exception ", e);
+            logger.error("coordinator server stop exception ", e);
             System.exit(-1);
         }
     }

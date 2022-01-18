@@ -28,8 +28,8 @@ public class BytezardCoordinatorModule extends AbstractModule {
         Names.bindProperties(binder(), PropertyUtils.getProperties());
         bind(ExecutionJobService.class).to(ExecutionJobServiceImpl.class);
         bind(CommandService.class).to(CommandServiceImpl.class);
-        bind(JobDefinitionService.class).to(JobDefinitionServiceImpl.class);
-        bind(JobInstanceService.class).to(JobInstanceServiceImpl.class);
+        bind(JobService.class).to(JobServiceImpl.class);
+        bind(TaskService.class).to(TaskServiceImpl.class);
         bind(ProjectService.class).to(ProjectServiceImpl.class);
         this.install(new MyBatisModule() {
             @Override

@@ -8,7 +8,7 @@ import io.simforce.bytezard.remote.command.CommandCode;
  */
 public class RollViewLogRequestCommand extends BaseCommand {
 
-    private long jobInstanceId;
+    private long taskId;
     /**
      *  log path
      */
@@ -59,11 +59,11 @@ public class RollViewLogRequestCommand extends BaseCommand {
         this.limit = limit;
     }
 
-    public long getJobInstanceId() {
-        return jobInstanceId;
+    public long getTaskId() {
+        return taskId;
     }
 
-    public void setJobInstanceId(long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
     }
 }

@@ -13,9 +13,6 @@ import com.github.pagehelper.PageInfo;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-/**
- * @author zixi0825
- */
 @Singleton
 public class ProjectServiceImpl implements ProjectService {
 

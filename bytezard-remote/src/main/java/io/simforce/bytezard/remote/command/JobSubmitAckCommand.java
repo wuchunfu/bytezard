@@ -5,7 +5,7 @@ package io.simforce.bytezard.remote.command;
  */
 public class JobSubmitAckCommand extends BaseCommand{
 
-    private long jobInstanceId;
+    private long taskId;
 
     private int code;
 
@@ -15,17 +15,17 @@ public class JobSubmitAckCommand extends BaseCommand{
         this.commandCode = CommandCode.JOB_SUBMIT_ACK;
     }
 
-    public JobSubmitAckCommand(long jobInstanceId){
-        this.jobInstanceId = jobInstanceId;
+    public JobSubmitAckCommand(long taskId){
+        this.taskId = taskId;
         this.commandCode = CommandCode.JOB_SUBMIT_ACK;
     }
 
-    public long getJobInstanceId() {
-        return jobInstanceId;
+    public long getTaskId() {
+        return taskId;
     }
 
-    public void setJobInstanceId(long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
     }
 
     public int getCode() {

@@ -3,7 +3,7 @@ package io.simforce.bytezard.coordinator.repository.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class JobInstance implements Serializable {
+public class Job implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -11,15 +11,17 @@ public class JobInstance implements Serializable {
 
     private String name;
 
-    private Long jobDefinitionId;
+    /**
+     * local/yarn/k8s
+     */
+    private String executePlatformType;
 
-    private Long projectId;
-
+    /**
+     * String -> JobParameter
+     */
     private String parameter;
 
-    private String json;
-
-    private Integer status;
+    private Long projectId;
 
     private Integer retryTimes;
 
@@ -31,19 +33,15 @@ public class JobInstance implements Serializable {
 
     private String tenantCode;
 
-    private String envFile;
-
     private String resources;
 
-    private Long executionId;
+    private Long version;
 
-    private LocalDateTime submitTime;
-
-    private LocalDateTime startTime;
-
-    private LocalDateTime endTime;
+    private Long createBy;
 
     private LocalDateTime createTime;
+
+    private Long updateBy;
 
     private LocalDateTime updateTime;
 
@@ -63,20 +61,12 @@ public class JobInstance implements Serializable {
         this.name = name;
     }
 
-    public Long getJobDefinitionId() {
-        return jobDefinitionId;
+    public String getExecutePlatformType() {
+        return executePlatformType;
     }
 
-    public void setJobDefinitionId(Long jobDefinitionId) {
-        this.jobDefinitionId = jobDefinitionId;
-    }
-
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setExecutePlatformType(String executePlatformType) {
+        this.executePlatformType = executePlatformType;
     }
 
     public String getParameter() {
@@ -87,20 +77,12 @@ public class JobInstance implements Serializable {
         this.parameter = parameter;
     }
 
-    public String getJson() {
-        return json;
+    public Long getProjectId() {
+        return projectId;
     }
 
-    public void setJson(String json) {
-        this.json = json;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 
     public Integer getRetryTimes() {
@@ -143,14 +125,6 @@ public class JobInstance implements Serializable {
         this.tenantCode = tenantCode;
     }
 
-    public String getEnvFile() {
-        return envFile;
-    }
-
-    public void setEnvFile(String envFile) {
-        this.envFile = envFile;
-    }
-
     public String getResources() {
         return resources;
     }
@@ -159,36 +133,20 @@ public class JobInstance implements Serializable {
         this.resources = resources;
     }
 
-    public Long getExecutionId() {
-        return executionId;
+    public Long getVersion() {
+        return version;
     }
 
-    public void setExecutionId(Long executionId) {
-        this.executionId = executionId;
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
-    public LocalDateTime getSubmitTime() {
-        return submitTime;
+    public Long getCreateBy() {
+        return createBy;
     }
 
-    public void setSubmitTime(LocalDateTime submitTime) {
-        this.submitTime = submitTime;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+    public void setCreateBy(Long createBy) {
+        this.createBy = createBy;
     }
 
     public LocalDateTime getCreateTime() {
@@ -197,6 +155,14 @@ public class JobInstance implements Serializable {
 
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public Long getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(Long updateBy) {
+        this.updateBy = updateBy;
     }
 
     public LocalDateTime getUpdateTime() {

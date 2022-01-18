@@ -2,20 +2,17 @@ package io.simforce.bytezard.coordinator.repository.service;
 
 import java.util.List;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 
-/**
- * @author zixi0825
- */
 public interface ExecutionJobService {
 
-    public long save(ExecutionJob job);
+    public long save(TaskRequest job);
 
-    public List<ExecutionJob> getUnfinishedJobs();
+    public List<TaskRequest> getUnfinishedJobs();
 
-    public List<ExecutionJob> getUnStartedJobs();
+    public List<TaskRequest> getUnStartedJobs();
 
-    public int updateById(ExecutionJob job);
+    public int updateById(TaskRequest job);
 
-    public ExecutionJob getById(long jobInstanceId);
+    public TaskRequest getById(long taskId);
 }

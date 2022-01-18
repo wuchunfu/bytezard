@@ -25,7 +25,7 @@ import io.simforce.bytezard.remote.command.CommandCode;
  */
 public class ViewLogRequestCommand  extends BaseCommand {
 
-    private long jobInstanceId;
+    private long taskId;
 
     /**
      *  log path
@@ -49,11 +49,11 @@ public class ViewLogRequestCommand  extends BaseCommand {
         this.path = path;
     }
 
-    public long getJobInstanceId() {
-        return jobInstanceId;
+    public long getTaskId() {
+        return taskId;
     }
 
-    public void setJobInstanceId(long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
     }
 }

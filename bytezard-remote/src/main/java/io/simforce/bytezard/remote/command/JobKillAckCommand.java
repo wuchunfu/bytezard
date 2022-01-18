@@ -5,7 +5,7 @@ package io.simforce.bytezard.remote.command;
  */
 public class JobKillAckCommand extends BaseCommand{
 
-    private Long jobInstanceId;
+    private Long taskId;
 
     private int code;
 
@@ -15,17 +15,17 @@ public class JobKillAckCommand extends BaseCommand{
         this.commandCode = CommandCode.JOB_KILL_ACK;
     }
 
-    public JobKillAckCommand(Long jobInstanceId){
-        this.jobInstanceId = jobInstanceId;
+    public JobKillAckCommand(Long taskId){
+        this.taskId = taskId;
         this.commandCode = CommandCode.JOB_KILL_ACK;
     }
 
-    public Long getJobInstanceId() {
-        return jobInstanceId;
+    public Long getTaskId() {
+        return taskId;
     }
 
-    public void setJobInstanceId(Long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
     public int getCode() {

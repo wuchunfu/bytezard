@@ -3,15 +3,14 @@ package io.simforce.bytezard.executor.processor;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 
 import io.simforce.bytezard.common.config.CoreConfig;
+import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.common.zookeeper.ZooKeeperClient;
 import io.simforce.bytezard.remote.command.Command;
 import io.simforce.bytezard.remote.connection.Connection;
 import io.simforce.bytezard.remote.connection.ServerConnectionManager;
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
 
 public class JobCallbackService {
 
@@ -35,8 +34,7 @@ public class JobCallbackService {
     }
 
     public void send(long id,Command command){
-        Connection connection = connectionManager
-                .getConnection();
+        Connection connection = connectionManager.getConnection();
 
         if (connection == null) {
             //将数据序列化以后写入zk的指定目录下
@@ -45,7 +43,7 @@ public class JobCallbackService {
                 mutex = zooKeeperClient.blockAcquireMutex(CoreConfig.JOB_COORDINATOR_RESPONSE_CACHE_LOCK_PATH);
                 if (connectionManager.getConnection() == null) {
                     logger.info("master is not available,now cache the response in zk");
-                    zooKeeperClient.persist(CoreConfig.JOB_RESPONSE_CACHE_PATH+"/"+id,FastJsonSerializer.serializeToString(command));
+                    zooKeeperClient.persist(CoreConfig.JOB_RESPONSE_CACHE_PATH+"/"+id, JsonSerializer.serializeToString(command));
                 } else {
                     connectionManager.getConnection().writeAndFlush(command);
                 }
@@ -61,7 +59,7 @@ public class JobCallbackService {
                 }
             }
         } else {
-            logger.info(JSON.toJSONString(connection));
+            logger.info(JSONUtils.toJsonString(connection));
             connection.writeAndFlush(command);
         }
     }

@@ -4,20 +4,20 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-import io.simforce.bytezard.coordinator.repository.entity.JobDefinition;
+import io.simforce.bytezard.coordinator.repository.entity.Job;
 
 /**
  * @author zixi0825
  */
-public interface JobDefinitionMapper {
+public interface JobMapper {
 
     /**
      * 返回主键字段id值
-     * @param jobDefinition
+     * @param job
      * @return
      */
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
-    @Insert("insert into bytezard_job_definition " +
+    @Insert("insert into bytezard_job " +
             "(name," +
             "parameter," +
             "job_type," +
@@ -53,15 +53,15 @@ public interface JobDefinitionMapper {
             "#{createUserId}," +
             "#{createTime}," +
             "#{updateTime}) ")
-    int save(JobDefinition jobDefinition);
+    int save(Job job);
 
     /**
      * updateById
-     * @param jobDefinition
+     * @param job
      * @return
      */
 
-    @Update({ "update bytezard_job_definition set " +
+    @Update({ "update bytezard_job set " +
             "name = #{name}," +
             "parameter = #{parameter}," +
             "job_type = #{jobType}," +
@@ -80,7 +80,7 @@ public interface JobDefinitionMapper {
             "create_time = #{createTime, jdbcType=TIMESTAMP}," +
             "update_time = #{updateTime, jdbcType=TIMESTAMP} " +
             "where id = #{id}" })
-    int updateById(JobDefinition jobDefinition);
+    int updateById(Job job);
 
     /**
      * SELECT BY ID
@@ -107,15 +107,15 @@ public interface JobDefinitionMapper {
             @Result(property = "createTime", column = "create_time"),
             @Result(property = "updateTime", column = "update_time")
     })
-    @Select("SELECT * from bytezard_job_definition WHERE id = #{id} ")
-    JobDefinition getById(long id);
+    @Select("SELECT * from bytezard_job WHERE id = #{id} ")
+    Job getById(long id);
 
     /**
      * SELECT BY ID
      * @param id
      * @return
      */
-    @Delete("delete from bytezard_job_definition WHERE id = #{id} ")
+    @Delete("delete from bytezard_job WHERE id = #{id} ")
     int deleteById(long id);
 
     /**
@@ -124,7 +124,7 @@ public interface JobDefinitionMapper {
      * @return
      */
     @ResultMap("resultMap")
-    @Select("SELECT * from bytezard_job_definition WHERE flow_definition_id = #{flowDefinitionId} ")
-    List<JobDefinition> listByFlowDefinitionId(long flowDefinitionId);
+    @Select("SELECT * from bytezard_job WHERE flow_definition_id = #{flowDefinitionId} ")
+    List<Job> listByFlowDefinitionId(long flowDefinitionId);
 
 }

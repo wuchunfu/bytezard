@@ -8,7 +8,7 @@ import io.simforce.bytezard.remote.command.CommandCode;
  */
 public class GetLogBytesRequestCommand extends BaseCommand {
 
-    private long jobInstanceId;
+    private long taskId;
 
     private String path;
 
@@ -29,11 +29,11 @@ public class GetLogBytesRequestCommand extends BaseCommand {
         this.path = path;
     }
 
-    public long getJobInstanceId() {
-        return jobInstanceId;
+    public long getTaskId() {
+        return taskId;
     }
 
-    public void setJobInstanceId(long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
     }
 }

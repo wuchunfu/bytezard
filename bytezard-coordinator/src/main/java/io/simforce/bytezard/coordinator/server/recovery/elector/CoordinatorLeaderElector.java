@@ -58,7 +58,7 @@ public class CoordinatorLeaderElector implements LeaderElectable {
         try {
             countDownLatch.await(300000,TimeUnit.MILLISECONDS);
         } catch(Exception e) {
-            logger.error("master leader elector count down await error {0}",e);
+            logger.error("coordinator leader elector count down await error {0}",e);
         }
     }
 

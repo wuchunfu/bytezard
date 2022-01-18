@@ -2,7 +2,7 @@ package io.simforce.bytezard.remote.command;
 
 import java.io.Serializable;
 
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 
 public class BaseCommand implements Serializable {
 
@@ -24,7 +24,7 @@ public class BaseCommand implements Serializable {
 
     private Command getCommand(Command command) {
         command.setCode(commandCode);
-        byte[] body = FastJsonSerializer.serialize(this);
+        byte[] body = JsonSerializer.serialize(this);
         command.setBody(body);
         return command;
     }

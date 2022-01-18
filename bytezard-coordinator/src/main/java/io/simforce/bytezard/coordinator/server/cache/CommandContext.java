@@ -1,18 +1,15 @@
 package io.simforce.bytezard.coordinator.server.cache;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.remote.command.CommandCode;
 
-/**
- * @author zixi0825
- */
 public class CommandContext {
 
     private CommandCode commandCode;
 
-    private Long jobInstanceId;
+    private Long taskId;
 
-    private ExecutionJob executionJob;
+    private TaskRequest taskRequest;
 
     public CommandContext(){}
 
@@ -24,19 +21,19 @@ public class CommandContext {
         this.commandCode = commandCode;
     }
 
-    public Long getJobInstanceId() {
-        return jobInstanceId;
+    public Long getTaskId() {
+        return taskId;
     }
 
-    public void setJobInstanceId(Long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
-    public ExecutionJob getExecutionJob() {
-        return executionJob;
+    public TaskRequest getTaskRequest() {
+        return taskRequest;
     }
 
-    public void setExecutionJob(ExecutionJob executionJob) {
-        this.executionJob = executionJob;
+    public void setTaskRequest(TaskRequest taskRequest) {
+        this.taskRequest = taskRequest;
     }
 }

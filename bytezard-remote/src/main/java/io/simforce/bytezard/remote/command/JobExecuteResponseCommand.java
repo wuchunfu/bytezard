@@ -1,14 +1,15 @@
 package io.simforce.bytezard.remote.command;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class JobExecuteResponseCommand extends BaseCommand {
 
-    private long jobInstanceId;
+    private long taskId;
 
     private int status;
 
-    private Date endTime;
+    private LocalDateTime endTime;
 
     private String applicationIds;
 
@@ -18,17 +19,17 @@ public class JobExecuteResponseCommand extends BaseCommand {
         this.commandCode = CommandCode.JOB_EXECUTE_RESPONSE;
     }
 
-    public JobExecuteResponseCommand(long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public JobExecuteResponseCommand(long taskId) {
+        this.taskId = taskId;
         this.commandCode = CommandCode.JOB_EXECUTE_RESPONSE;
     }
 
-    public long getJobInstanceId() {
-        return jobInstanceId;
+    public long getTaskId() {
+        return taskId;
     }
 
-    public void setJobInstanceId(long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
     }
 
     public int getStatus() {
@@ -39,11 +40,11 @@ public class JobExecuteResponseCommand extends BaseCommand {
         this.status = status;
     }
 
-    public Date getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 

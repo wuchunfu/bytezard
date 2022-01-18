@@ -8,9 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import io.netty.channel.Channel;
 
-/**
- * @author zixi0825
- */
 public class JobKillResponseProcessor implements NettyEventProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(JobKillResponseProcessor.class);

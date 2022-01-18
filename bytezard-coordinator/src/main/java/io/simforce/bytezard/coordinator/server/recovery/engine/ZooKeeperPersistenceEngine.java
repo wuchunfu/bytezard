@@ -2,7 +2,7 @@ package io.simforce.bytezard.coordinator.server.recovery.engine;
 
 import java.util.List;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.coordinator.server.recovery.PersistenceEngine;
 
 /**
@@ -15,7 +15,7 @@ public class ZooKeeperPersistenceEngine implements PersistenceEngine {
     }
 
     @Override
-    public long persist(String name, ExecutionJob job) {
+    public long persist(String name, TaskRequest job) {
         return 0L;
     }
 
@@ -25,22 +25,22 @@ public class ZooKeeperPersistenceEngine implements PersistenceEngine {
     }
 
     @Override
-    public void update(String name, ExecutionJob job) {
+    public void update(String name, TaskRequest job) {
 
     }
 
     @Override
-    public List<ExecutionJob> getUnStartedJobs() {
+    public List<TaskRequest> getUnStartedJobs() {
         return null;
     }
 
     @Override
-    public List<ExecutionJob> getUnFinishedJobs() {
+    public List<TaskRequest> getUnFinishedJobs() {
         return null;
     }
 
     @Override
-    public ExecutionJob getById(long id) {
+    public TaskRequest getById(long id) {
         return null;
     }
 }

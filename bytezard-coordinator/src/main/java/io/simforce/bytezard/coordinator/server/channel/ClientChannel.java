@@ -14,9 +14,6 @@ import io.simforce.bytezard.remote.future.ResponseFutureManager;
 import io.simforce.bytezard.remote.utils.ChannelUtils;
 import io.simforce.bytezard.remote.utils.Host;
 
-/**
- * @author zixi0825
- */
 public class ClientChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientChannel.class);

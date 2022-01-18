@@ -8,7 +8,7 @@ import io.simforce.bytezard.remote.command.PingCommand;
 import io.simforce.bytezard.remote.command.PongCommand;
 import io.simforce.bytezard.remote.processor.NettyEventProcessor;
 import io.simforce.bytezard.remote.utils.ChannelUtils;
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,6 @@ import com.google.common.base.Preconditions;
 
 import io.netty.channel.Channel;
 
-/**
- * @author zixi0825
- */
 public class PingProcessor implements NettyEventProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(PingProcessor.class);
@@ -38,7 +35,7 @@ public class PingProcessor implements NettyEventProcessor {
                 String.format("invalid command type : %s", command.getCode()));
 
         PingCommand pingCommand =
-                FastJsonSerializer.deserialize(command.getBody(),PingCommand.class);
+                JsonSerializer.deserialize(command.getBody(),PingCommand.class);
 
         logger.info(JSONUtils.toJSONString(pingCommand));
 

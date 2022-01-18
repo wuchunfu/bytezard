@@ -45,22 +45,22 @@ public class LoggerUtils {
     public static String buildJobUniqueId(String affix,
                                      int platformType,
                                      String jobType,
-                                     long jobInstanceId){
+                                     long taskId){
         // - [JobUniqueId=JOB_79_4084_15210]
         return String.format(" - %s%s-%s-%s-%s]",JOB_UNIQUE_ID_LOG_FORMAT,affix,
                 platformType,
                 jobType,
-                jobInstanceId);
+                taskId);
     }
 
     public static String buildJobUniqueId(String affix,
                                           String jobType,
-                                          long jobInstanceId){
+                                          long taskId){
         // - [JobUniqueId=JOB_79_4084_15210]
         return String.format(" - %s-%s-%s-%s]",
                 JOB_UNIQUE_ID_LOG_FORMAT,
                 affix,
                 jobType,
-                jobInstanceId);
+                taskId);
     }
 }

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.druid.support.json.JSONUtils;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.entity.LogResult;
 import io.simforce.bytezard.coordinator.server.cache.JobExecuteManager;
 import io.simforce.bytezard.coordinator.server.channel.ClientChannel;
@@ -20,11 +20,8 @@ import io.simforce.bytezard.remote.command.log.RollViewLogRequestCommand;
 import io.simforce.bytezard.remote.command.log.RollViewLogResponseCommand;
 import io.simforce.bytezard.remote.command.log.ViewLogRequestCommand;
 import io.simforce.bytezard.remote.command.log.ViewLogResponseCommand;
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 
-/**
- * @author zixi0825
- */
 public class LogService {
 
     private final Logger logger = LoggerFactory.getLogger(LogService.class);
@@ -41,13 +38,13 @@ public class LogService {
         this.databasePersistenceEngine = databasePersistenceEngine;
     }
 
-    public LogResult queryLog(long jobInstanceId, int offsetLine){
-        return this.queryLog(jobInstanceId,offsetLine,10000);
+    public LogResult queryLog(long taskId, int offsetLine){
+        return this.queryLog(taskId,offsetLine,10000);
     }
 
-    public LogResult queryLog(long jobInstanceId,int offsetLine,int limit){
+    public LogResult queryLog(long taskId,int offsetLine,int limit){
 
-        ExecutionJob job = getExecutionJob(jobInstanceId);
+        TaskRequest job = getExecutionJob(taskId);
         if (job == null) {
             return null;
         }
@@ -64,16 +61,16 @@ public class LogService {
 
         Command result = clientChannel.sendSync(rollViewLogRequestCommand.convert2Command(),10000);
         if(result != null){
-            RollViewLogResponseCommand command = FastJsonSerializer.deserialize(result.getBody(), RollViewLogResponseCommand.class);
+            RollViewLogResponseCommand command = JsonSerializer.deserialize(result.getBody(), RollViewLogResponseCommand.class);
             return new LogResult(command.getMsg(),command.getOffsetLine());
         }
 
         return null;
     }
 
-    public LogResult queryWholeLog(long jobInstanceId){
+    public LogResult queryWholeLog(long taskId){
 
-        ExecutionJob job = getExecutionJob(jobInstanceId);
+        TaskRequest job = getExecutionJob(taskId);
         if (job == null) {
             return null;
         }
@@ -88,16 +85,16 @@ public class LogService {
         logger.info("send command {}", JSONUtils.toJSONString(viewLogRequestCommand));
         Command result = clientChannel.sendSync(viewLogRequestCommand.convert2Command(),10000);
         if(result != null){
-            ViewLogResponseCommand command = FastJsonSerializer.deserialize(result.getBody(),ViewLogResponseCommand.class);
+            ViewLogResponseCommand command = JsonSerializer.deserialize(result.getBody(),ViewLogResponseCommand.class);
             return new LogResult(command.getMsg(),0);
         }
 
         return null;
     }
 
-    public byte[] getLogBytes(long jobInstanceId){
+    public byte[] getLogBytes(long taskId){
 
-        ExecutionJob job = getExecutionJob(jobInstanceId);
+        TaskRequest job = getExecutionJob(taskId);
         if (job == null) {
             return null;
         }
@@ -112,14 +109,14 @@ public class LogService {
 
         Command result = clientChannel.sendSync(getLogBytesRequestCommand.convert2Command(),10000);
         if(result != null){
-            GetLogBytesResponseCommand command = FastJsonSerializer.deserialize(result.getBody(),GetLogBytesResponseCommand.class);
+            GetLogBytesResponseCommand command = JsonSerializer.deserialize(result.getBody(),GetLogBytesResponseCommand.class);
             return command.getMsg();
         }
 
         return null;
     }
 
-    private ClientChannel getClientChannel(ExecutionJob job) {
+    private ClientChannel getClientChannel(TaskRequest job) {
         ClientChannel clientChannel = clientChannelManager.getExecutorByIp(job.getExecuteHost().split(":")[0]);
         if(clientChannel == null || clientChannel.getChannel() == null){
             logger.info("executor is not exist,can not get the log");
@@ -128,14 +125,14 @@ public class LogService {
         return clientChannel;
     }
 
-    private ExecutionJob getExecutionJob(long jobInstanceId) {
-        ExecutionJob job = jobExecuteManager.getExecutionJob(jobInstanceId);
+    private TaskRequest getExecutionJob(long taskId) {
+        TaskRequest job = jobExecuteManager.getExecutionJob(taskId);
 
         if(job == null || StringUtils.isEmpty(job.getLogPath())){
-            job = databasePersistenceEngine.getById(jobInstanceId);
+            job = databasePersistenceEngine.getById(taskId);
 
             if(job == null || StringUtils.isEmpty(job.getLogPath())){
-                logger.info("job {} is not exist",jobInstanceId);
+                logger.info("job {} is not exist",taskId);
                 return null;
             }
         }

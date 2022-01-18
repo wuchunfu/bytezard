@@ -15,16 +15,14 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.druid.support.json.JSONUtils;
-import com.alibaba.fastjson.JSON;
-
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
+import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.common.utils.Stopper;
 import io.simforce.bytezard.common.utils.ThreadUtils;
-import io.simforce.bytezard.coordinator.repository.entity.JobInstance;
+import io.simforce.bytezard.coordinator.repository.entity.Task;
 import io.simforce.bytezard.common.enums.ExecutionStatus;
 import io.simforce.bytezard.coordinator.exception.ExecuteJobException;
 import io.simforce.bytezard.coordinator.repository.module.BytezardCoordinatorInjector;
@@ -53,13 +51,13 @@ public class JobExecuteManager {
 
     private final LinkedBlockingQueue<CommandContext> jobQueue = new LinkedBlockingQueue<>();
 
-    private final ConcurrentHashMap<Long, ExecutionJob> unFinishedJobMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Long, TaskRequest> unFinishedJobMap = new ConcurrentHashMap<>();
     
     private final LinkedBlockingQueue<JobResponseContext> responseQueue = new LinkedBlockingQueue<>();
     
     private final ConcurrentHashMap<Host,Set<Long>> executor2Jobs = new ConcurrentHashMap<>();
 
-    private final ConcurrentHashMap<Long,String> jobInstanceId2ClientIp = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Long,String> taskId2ClientIp = new ConcurrentHashMap<>();
 
     private final IJobDispatcher<ExecuteResult> jobDispatcher;
 
@@ -100,42 +98,42 @@ public class JobExecuteManager {
         logger.info("job response operator start");
     }
 
-    public boolean addExecuteCommand(ExecutionJob executionJob){
-        logger.info("put into wait to send {}", JSONUtils.toJSONString(executionJob));
-        unFinishedJobMap.put(executionJob.getJobInstanceId(), executionJob);
+    public boolean addExecuteCommand(TaskRequest taskRequest){
+        logger.info("put into wait to send {}", JSONUtils.toJsonString(taskRequest));
+        unFinishedJobMap.put(taskRequest.getTaskId(), taskRequest);
         CommandContext commandContext = new CommandContext();
         commandContext.setCommandCode(CommandCode.JOB_EXECUTE_REQUEST);
-        commandContext.setJobInstanceId(executionJob.getJobInstanceId());
-        commandContext.setExecutionJob(executionJob);
+        commandContext.setTaskId(taskRequest.getTaskId());
+        commandContext.setTaskRequest(taskRequest);
         jobQueue.offer(commandContext);
 
         return true;
         //记录该任务从哪个client传过来，会将结果发送回该client
     }
 
-    public void addKillCommand(Long jobInstanceId){
+    public void addKillCommand(Long taskId){
         CommandContext commandContext = new CommandContext();
         commandContext.setCommandCode(CommandCode.JOB_KILL_REQUEST);
-        commandContext.setJobInstanceId(jobInstanceId);
+        commandContext.setTaskId(taskId);
         jobQueue.offer(commandContext);
     }
 
-    public void putJobInstanceId2ClientIpMap(Long jobInstanceId,String ip){
-        this.jobInstanceId2ClientIp.put(jobInstanceId,ip);
+    public void putTaskId2ClientIpMap(Long taskId,String ip){
+        this.taskId2ClientIp.put(taskId,ip);
     }
 
-    public void putUnStartedJobs(List<ExecutionJob> executionJobs){
-        if (executionJobs != null) {
-            for (ExecutionJob executionJob : executionJobs) {
-                addExecuteCommand(executionJob);
+    public void putUnStartedJobs(List<TaskRequest> taskRequests){
+        if (taskRequests != null) {
+            for (TaskRequest taskRequest : taskRequests) {
+                addExecuteCommand(taskRequest);
             }
         }
     }
 
-    public void putUnFinishedJobs(List<ExecutionJob> executionJobs) {
-        if (executionJobs != null) {
-            for (ExecutionJob executionJob : executionJobs) {
-                unFinishedJobMap.put(executionJob.getJobInstanceId(), executionJob);
+    public void putUnFinishedJobs(List<TaskRequest> taskRequests) {
+        if (taskRequests != null) {
+            for (TaskRequest taskRequest : taskRequests) {
+                unFinishedJobMap.put(taskRequest.getTaskId(), taskRequest);
             }
         }
     }
@@ -144,8 +142,8 @@ public class JobExecuteManager {
         return persistenceEngine;
     }
 
-    public ExecutionJob getExecutionJob(Long jobInstanceId){
-        return unFinishedJobMap.get(jobInstanceId);
+    public TaskRequest getExecutionJob(Long taskId){
+        return unFinishedJobMap.get(taskId);
     }
 
     class JobSender implements Runnable {
@@ -155,13 +153,13 @@ public class JobExecuteManager {
             while(Stopper.isRunning()) {
                 try {
                     CommandContext commandContext = jobQueue.take();
-                    Long jobInstanceId = commandContext.getJobInstanceId();
+                    Long taskId = commandContext.getTaskId();
                     switch(commandContext.getCommandCode()){
                         case JOB_EXECUTE_REQUEST:
-                            sendExecuteCommand(commandContext, jobInstanceId);
+                            sendExecuteCommand(commandContext, taskId);
                             break;
                         case JOB_KILL_REQUEST:
-                            sendKillCommand(jobInstanceId);
+                            sendKillCommand(taskId);
                             break;
                         default:
                             break;
@@ -175,18 +173,18 @@ public class JobExecuteManager {
         }
     }
 
-    private void sendExecuteCommand(CommandContext commandContext, Long jobInstanceId) {
-        ExecutionJob job = unFinishedJobMap.get(jobInstanceId);
-        JobExecuteRequestCommand jobExecuteRequestCommand = new JobExecuteRequestCommand(JSON.toJSONString(job));
+    private void sendExecuteCommand(CommandContext commandContext, Long taskId) {
+        TaskRequest job = unFinishedJobMap.get(taskId);
+        JobExecuteRequestCommand jobExecuteRequestCommand = new JobExecuteRequestCommand(JSONUtils.toJsonString(job));
         ExecutionContext executionContext = new ExecutionContext(jobExecuteRequestCommand.convert2Command(), RequestClientType.EXECUTOR);
 
         logger.info("get the executionJob:{} to send",executionContext);
         try {
             ExecuteResult result = jobDispatcher.execute(executionContext);
             if (result != null && result.getResult()) {
-                logger.info("JobSender:"+jobInstanceId+"_"+JSONUtils.toJSONString(unFinishedJobMap.get(jobInstanceId)));
-                putJobInExecutor2JobMap(jobInstanceId, result);
-                wheelTimer.newTimeout(new JobTimeoutTimerTask(jobInstanceId,job.getRetryNums()),job.getTimeout(),TimeUnit.SECONDS);
+                logger.info("JobSender:"+taskId+"_"+JSONUtils.toJsonString(unFinishedJobMap.get(taskId)));
+                putJobInExecutor2JobMap(taskId, result);
+                wheelTimer.newTimeout(new JobTimeoutTimerTask(taskId,job.getRetryTimes()),job.getTimeout(),TimeUnit.SECONDS);
             }
         } catch(Exception e) {
             jobQueue.offer(commandContext);
@@ -195,13 +193,13 @@ public class JobExecuteManager {
         }
     }
 
-    private void sendKillCommand(Long jobInstanceId) {
-        JobKillRequestCommand jobKillRequestCommand = new JobKillRequestCommand(jobInstanceId);
+    private void sendKillCommand(Long taskId) {
+        JobKillRequestCommand jobKillRequestCommand = new JobKillRequestCommand(taskId);
         ExecutionContext executionContext2 = new ExecutionContext(jobKillRequestCommand.convert2Command(),RequestClientType.EXECUTOR);
 
         logger.info("get the executionJob:{} to send",executionContext2);
         try{
-            ExecutionJob job = unFinishedJobMap.get(jobInstanceId);
+            TaskRequest job = unFinishedJobMap.get(taskId);
             if (job == null) {
                 throw new ExecuteJobException("job is not exist,can not kill the job");
             }
@@ -220,9 +218,9 @@ public class JobExecuteManager {
 
             ExecuteResult result = jobDispatcher.execute(executionContext2,clientChannel);
             if (result != null && result.getResult()) {
-                logger.info("JobSender:"+jobInstanceId+"_"+JSONUtils.toJSONString(unFinishedJobMap.get(jobInstanceId)));
-                //将jobInstanceId从缓存中移除掉
-                putJobInExecutor2JobMap(jobInstanceId, result);
+                logger.info("JobSender:"+taskId+"_"+JSONUtils.toJsonString(unFinishedJobMap.get(taskId)));
+                //将taskId从缓存中移除掉
+                putJobInExecutor2JobMap(taskId, result);
             }
         } catch(Exception e) {
             logger.error("dispatcher job error",e);
@@ -230,14 +228,14 @@ public class JobExecuteManager {
         }
     }
 
-    private void putJobInExecutor2JobMap(Long jobInstanceId, ExecuteResult result) {
+    private void putJobInExecutor2JobMap(Long taskId, ExecuteResult result) {
         Host host = ChannelUtils.toAddress(result.getChannel());
 
         Set<Long> jobs = executor2Jobs.get(host);
         if (jobs == null) {
             jobs = new HashSet<>();
         }
-        jobs.add(jobInstanceId);
+        jobs.add(taskId);
 
         executor2Jobs.put(host,jobs);
     }
@@ -253,24 +251,21 @@ public class JobExecuteManager {
                 try {
                     JobResponseContext jobResponse = responseQueue.take();
 
-                    ExecutionJob job = jobResponse.getExecutionJob();
-                    unFinishedJobMap.put(job.getJobInstanceId(),job);
-                    logger.info(JSONUtils.toJSONString(job));
+                    TaskRequest job = jobResponse.getTaskRequest();
+                    unFinishedJobMap.put(job.getTaskId(),job);
+                    logger.info(JSONUtils.toJsonString(job));
 
-                    if(ExecutionStatus.of(job.getStatus()).typeIsSuccess()){
-                        persistenceEngine.update("",job);
-                        unFinishedJobMap.remove(job.getJobInstanceId());
+                    if (ExecutionStatus.of(job.getStatus()).typeIsSuccess()) {
+                        unFinishedJobMap.remove(job.getTaskId());
 
-                        JobInstance jobInstance = jobExternalService.getJobInstanceByExecutionId(job.getJobInstanceId());
-                        jobInstance.setStatus(job.getStatus());
-                        jobExternalService.updateJobInstance(jobInstance);
+                        jobExternalService.updateTaskStatus(job.getTaskId(), job.getStatus());
 
-                        String clientIp = jobInstanceId2ClientIp.get(job.getJobInstanceId());
-                        if(StringUtils.isNotEmpty(clientIp)){
+                        String clientIp = taskId2ClientIp.get(job.getTaskId());
+                        if (StringUtils.isNotEmpty(clientIp)) {
                             JobExecuteResponseCommand jobExecuteResponseCommand =
                                     new JobExecuteResponseCommand();
                             jobExecuteResponseCommand.setApplicationIds(job.getApplicationId());
-                            jobExecuteResponseCommand.setJobInstanceId(job.getJobInstanceId());
+                            jobExecuteResponseCommand.setTaskId(job.getTaskId());
                             jobExecuteResponseCommand.setProcessId(job.getProcessId());
                             jobExecuteResponseCommand.setStatus(job.getStatus());
                             job.setEndTime(job.getEndTime());
@@ -280,26 +275,27 @@ public class JobExecuteManager {
                                     .getChannel()
                                     .writeAndFlush(jobExecuteResponseCommand.convert2Command());
                         }
+
                     } else if (ExecutionStatus.of(job.getStatus()).typeIsFailure()) {
-                        ExecutionJob oldJob = unFinishedJobMap.get(job.getJobInstanceId());
-                        logger.info("retry job: "+JSONUtils.toJSONString(oldJob));
-                        int retryNums = oldJob.getRetryNums();
-                        if (oldJob.getRetryNums() > 0) {
+//                        TaskRequest oldJob = unFinishedJobMap.get(job.getTaskId());
+                        Task task = jobExternalService.getTaskById(job.getTaskId());
+                        logger.info("retry task: "+JSONUtils.toJsonString(task));
+
+                        int retryNums = task.getRetryTimes();
+                        if (task.getRetryTimes() > 0) {
                             CommandContext commandContext = new CommandContext();
-                            commandContext.setExecutionJob(oldJob);
-                            commandContext.setJobInstanceId(oldJob.getJobInstanceId());
+                            commandContext.setTaskRequest(jobExternalService.buildTaskRequest(task));
+                            commandContext.setTaskId(job.getTaskId());
                             commandContext.setCommandCode(CommandCode.JOB_EXECUTE_REQUEST);
                             jobQueue.offer(commandContext);
-                            oldJob.setRetryNums(retryNums - 1);
+                            jobExternalService.updateTaskRetryTimes(job.getTaskId(), retryNums - 1);
                         } else {
-                            persistenceEngine.update("",job);
-                            unFinishedJobMap.remove(job.getJobInstanceId());
+                            unFinishedJobMap.remove(job.getTaskId());
                         }
                     } else if(ExecutionStatus.of(job.getStatus()).typeIsCancel()) {
-                        persistenceEngine.update("",job);
-                        unFinishedJobMap.remove(job.getJobInstanceId());
+                        unFinishedJobMap.remove(job.getTaskId());
                     } else if(ExecutionStatus.of(job.getStatus()).typeIsRunning()) {
-                        persistenceEngine.update("",job);
+                        // do nothing
                     }
 
                 } catch(Exception e) {
@@ -318,11 +314,11 @@ public class JobExecuteManager {
     }
 
     public void reassignJob(Host host){
-        //重试3次，如果一直找不到可用的executor，那么就直接将master的状态切换不可用
+        //重试3次，如果一直找不到可用的executor，那么就直接将coordinator的状态切换不可用
         logger.info("start reassign job");
 
-        Set<Long> jobInstanceIds = executor2Jobs.get(host);
-        if(CollectionUtils.isEmpty(jobInstanceIds)){
+        Set<Long> taskIds = executor2Jobs.get(host);
+        if(CollectionUtils.isEmpty(taskIds)){
             logger.info("there's no job need to reassign");
             return;
         }
@@ -334,19 +330,20 @@ public class JobExecuteManager {
                 ThreadUtils.sleep(1000*(10-retryNums));
                 logger.info("retry get executor {}",retryNums);
             } else {
-                for (Long jobInstanceId:jobInstanceIds) {
-                    if (unFinishedJobMap.get(jobInstanceId) != null) {
-                        ExecutionJob job = unFinishedJobMap.get(jobInstanceId);
+                for (Long taskId:taskIds) {
+                    if (unFinishedJobMap.get(taskId) != null) {
+                        TaskRequest job = unFinishedJobMap.get(taskId);
 
                         //发送检查YARN_APPLICATION是否还在运行当中，如果仍然在运行，那么构建检查任务发送
 
                         CommandContext commandContext = new CommandContext();
                         commandContext.setCommandCode(CommandCode.JOB_EXECUTE_REQUEST);
-                        commandContext.setJobInstanceId(jobInstanceId);
-                        commandContext.setExecutionJob(unFinishedJobMap.get(jobInstanceId));
+                        commandContext.setTaskId(taskId);
+                        commandContext.setTaskRequest(unFinishedJobMap.get(taskId));
                         jobQueue.offer(commandContext);
                     }
                 }
+
                 break;
             }
         } while(Stopper.isRunning() && retryNums>0);
@@ -354,30 +351,30 @@ public class JobExecuteManager {
 
     class JobTimeoutTimerTask implements TimerTask {
 
-        private final long jobInstanceId;
+        private final long taskId;
         private final int retryTimes;
 
-        public JobTimeoutTimerTask(long jobInstanceId,int retryTimes){
-            this.jobInstanceId = jobInstanceId;
+        public JobTimeoutTimerTask(long taskId,int retryTimes){
+            this.taskId = taskId;
             this.retryTimes = retryTimes;
         }
 
         @Override
         public void run(Timeout timeout) throws Exception {
-            ExecutionJob job = unFinishedJobMap.get(this.jobInstanceId);
+            TaskRequest job = unFinishedJobMap.get(this.taskId);
             if (job == null) {
-                logger.info("job {} is finished, do nothing...",jobInstanceId);
+                logger.info("job {} is finished, do nothing...",taskId);
                 return;
             }
 
-            if (this.retryTimes != job.getRetryNums()) {
-                logger.info("job {} is finished, do nothing...",jobInstanceId);
+            if (this.retryTimes != job.getRetryTimes()) {
+                logger.info("job {} is finished, do nothing...",taskId);
                 return;
             }
 
             logger.info("job is timeout,do kill");
             //这个地方可以根据超时策略进行处理
-            sendKillCommand(this.jobInstanceId);
+            sendKillCommand(this.taskId);
         }
     }
 

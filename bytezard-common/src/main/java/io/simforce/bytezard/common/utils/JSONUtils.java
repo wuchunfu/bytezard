@@ -133,6 +133,15 @@ public class JSONUtils {
         return null;
     }
 
+    public static JsonNode parseNode(String json) {
+        try {
+            return objectMapper.readTree(json);
+        } catch (Exception e) {
+            logger.error("parse object exception!", e);
+        }
+        return null;
+    }
+
     /**
      *  deserialize
      *
@@ -211,6 +220,20 @@ public class JSONUtils {
         }
 
         return node.asText();
+    }
+
+    public static JsonNode findNode(JsonNode jsonNode, String fieldName) {
+        return jsonNode.findValue(fieldName);
+    }
+
+    public static JsonNode findNode(String json, String fieldName) {
+
+        JsonNode jsonNode = parseNode(json);
+        if (jsonNode != null) {
+            return jsonNode.findValue(fieldName);
+        }
+
+        return null;
     }
 
     /**

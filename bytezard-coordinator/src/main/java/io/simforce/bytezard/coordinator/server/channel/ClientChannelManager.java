@@ -10,26 +10,21 @@ import org.slf4j.LoggerFactory;
 import io.simforce.bytezard.remote.command.RequestClientType;
 import io.simforce.bytezard.remote.utils.Host;
 
-/**
- * 用于管理host，主要就是获取
- *
- * @author zixi0825
- */
 public class ClientChannelManager {
 
     private final Logger logger = LoggerFactory.getLogger(ClientChannelManager.class);
 
     private final ConcurrentHashMap<Host,ClientChannel> executors =
-            new ConcurrentHashMap<>();
+                                                        new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<Host,ClientChannel> clients =
-            new ConcurrentHashMap<>();
+                                                        new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String,ClientChannel> ip2Executors =
-            new ConcurrentHashMap<>();
+                                                        new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String,ClientChannel> ip2Clients =
-            new ConcurrentHashMap<>();
+                                                        new ConcurrentHashMap<>();
 
     private ClientChannelManager(){}
 

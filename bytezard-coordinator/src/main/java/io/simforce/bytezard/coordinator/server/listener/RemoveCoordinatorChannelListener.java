@@ -10,24 +10,21 @@ import io.simforce.bytezard.remote.connection.ServerConnectionManager;
 import io.simforce.bytezard.remote.connection.ServerReConnector;
 import io.simforce.bytezard.remote.listener.BaseHandlerListener;
 
-/**
- * @author zixi0825
- */
-public class RemoveMasterChannelListener extends BaseHandlerListener {
+public class RemoveCoordinatorChannelListener extends BaseHandlerListener {
 
-    private final Logger logger = LoggerFactory.getLogger(RemoveMasterChannelListener.class);
+    private final Logger logger = LoggerFactory.getLogger(RemoveCoordinatorChannelListener.class);
 
     private final ServerReConnector serverReConnector;
     private final ServerConnectionManager serverConnectionManager;
 
-    public RemoveMasterChannelListener(ServerReConnector serverReConnector){
+    public RemoveCoordinatorChannelListener(ServerReConnector serverReConnector){
         this.serverReConnector = serverReConnector;
         this.serverConnectionManager = ServerConnectionManager.getInstance();
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx, BytezardRemoteClient bytezardRemoteClient) throws Exception {
-        logger.info("executor 2 master channel inactive");
+        logger.info("executor 2 coordinator channel inactive");
         serverConnectionManager.setConnection(null);
         serverReConnector.doConnect(bytezardRemoteClient,null, RequestClientType.CLIENT);
     }

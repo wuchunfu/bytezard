@@ -7,9 +7,6 @@ import io.simforce.bytezard.coordinator.repository.service.CommandService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-/**
- * @author zixi0825
- */
 @Singleton
 public class CommandServiceImpl implements CommandService {
 

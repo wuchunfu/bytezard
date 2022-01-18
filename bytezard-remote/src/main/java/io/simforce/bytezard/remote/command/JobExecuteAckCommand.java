@@ -1,12 +1,13 @@
 package io.simforce.bytezard.remote.command;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class JobExecuteAckCommand extends BaseCommand{
 
-    private long jobInstanceId;
+    private long taskId;
 
-    private Date startTime;
+    private LocalDateTime startTime;
 
     private String host;
 
@@ -16,8 +17,8 @@ public class JobExecuteAckCommand extends BaseCommand{
 
     private String executePath;
 
-    public JobExecuteAckCommand(long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public JobExecuteAckCommand(long taskId) {
+        this.taskId = taskId;
         this.commandCode = CommandCode.JOB_EXECUTE_ACK;
     }
 
@@ -25,19 +26,19 @@ public class JobExecuteAckCommand extends BaseCommand{
         this.commandCode = CommandCode.JOB_EXECUTE_ACK;
     }
 
-    public long getJobInstanceId() {
-        return jobInstanceId;
+    public long getTaskId() {
+        return taskId;
     }
 
-    public void setJobInstanceId(long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
     }
 
-    public Date getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 

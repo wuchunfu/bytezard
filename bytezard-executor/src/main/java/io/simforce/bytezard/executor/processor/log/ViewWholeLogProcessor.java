@@ -11,7 +11,7 @@ import io.simforce.bytezard.remote.command.CommandCode;
 import io.simforce.bytezard.remote.command.log.ViewLogRequestCommand;
 import io.simforce.bytezard.remote.command.log.ViewLogResponseCommand;
 import io.simforce.bytezard.remote.processor.NettyEventProcessor;
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class ViewWholeLogProcessor implements NettyEventProcessor {
                 String.format("invalid command type : %s", command.getCode()));
 
         ViewLogRequestCommand rollViewLogRequestCommand =
-                FastJsonSerializer.deserialize(command.getBody(),ViewLogRequestCommand.class);
+                JsonSerializer.deserialize(command.getBody(),ViewLogRequestCommand.class);
 
         ViewLogResponseCommand viewLogResponseCommand = new ViewLogResponseCommand();
         viewLogResponseCommand.setMsg(readWholeFileContent(rollViewLogRequestCommand.getPath()));

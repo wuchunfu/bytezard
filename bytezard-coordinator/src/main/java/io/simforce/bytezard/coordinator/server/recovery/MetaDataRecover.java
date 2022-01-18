@@ -6,7 +6,7 @@ import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import java.util.List;
 
 import io.simforce.bytezard.common.config.CoreConfig;
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.utils.Stopper;
 import io.simforce.bytezard.common.zookeeper.ZooKeeperClient;
 import io.simforce.bytezard.coordinator.server.cache.JobExecuteManager;
@@ -14,17 +14,11 @@ import io.simforce.bytezard.coordinator.config.CoordinatorConfiguration;
 import io.simforce.bytezard.remote.command.Command;
 import io.simforce.bytezard.remote.command.JobExecuteAckCommand;
 import io.simforce.bytezard.remote.command.JobExecuteResponseCommand;
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.druid.support.json.JSONUtils;
-import com.alibaba.fastjson.JSON;
-
-/**
- * @author zixi0825
- */
 public class MetaDataRecover {
 
     private final Logger logger = LoggerFactory.getLogger(MetaDataRecover.class);
@@ -56,8 +50,8 @@ public class MetaDataRecover {
         //处理缓存在zk中的response
         processCachedResponse();
 
-        List<ExecutionJob> unStartedJob = persistenceEngine.getUnStartedJobs();
-        List<ExecutionJob> unFinishedJob = persistenceEngine.getUnFinishedJobs();
+        List<TaskRequest> unStartedJob = persistenceEngine.getUnStartedJobs();
+        List<TaskRequest> unFinishedJob = persistenceEngine.getUnFinishedJobs();
 
 //        logger.info(JSONUtils.toJSONString(unStartedJob));
 //        logger.info(JSONUtils.toJSONString(unFinishedJob));
@@ -83,12 +77,12 @@ public class MetaDataRecover {
                 try {
                     cacheJobs = zooKeeperClient.getChildrenKeys(CoreConfig.JOB_RESPONSE_CACHE_PATH);
                     if (CollectionUtils.isNotEmpty(cacheJobs)) {
-                        //key = jobInstanceId
+                        //key = taskId
                         for (String key:cacheJobs) {
                             String commandStr = zooKeeperClient.get(CoreConfig.JOB_RESPONSE_CACHE_PATH+"/"+key);
-                            Command command = FastJsonSerializer.deserialize(commandStr.getBytes(),Command.class);
-                            ExecutionJob executionJob = getExecutionJobByCommandCode(command);
-                            persistenceEngine.update("", executionJob);
+                            Command command = JsonSerializer.deserialize(commandStr.getBytes(),Command.class);
+                            TaskRequest taskRequest = getExecutionJobByCommandCode(command);
+                            persistenceEngine.update("", taskRequest);
                             zooKeeperClient.remove(CoreConfig.JOB_RESPONSE_CACHE_PATH+"/"+key);
                         }
                     } else {
@@ -117,26 +111,26 @@ public class MetaDataRecover {
         return recoveryState;
     }
 
-    private ExecutionJob getExecutionJobByCommandCode(Command command) {
+    private TaskRequest getExecutionJobByCommandCode(Command command) {
 
-        ExecutionJob executionJob = new ExecutionJob();
+        TaskRequest taskRequest = new TaskRequest();
 
         switch (command.getCode()){
             case JOB_EXECUTE_ACK:
-                JobExecuteAckCommand jobAckCommand = JSON.parseObject(new String(command.getBody()), JobExecuteAckCommand.class);
-                executionJob.setJobInstanceId(jobAckCommand.getJobInstanceId());
-                executionJob.setStartTime(jobAckCommand.getStartTime());
-                executionJob.setStatus(jobAckCommand.getStatus());
-                executionJob.setLogPath(jobAckCommand.getLogPath());
-                executionJob.setExecutePath(jobAckCommand.getExecutePath());
+                JobExecuteAckCommand jobAckCommand = JsonSerializer.deserialize(new String(command.getBody()), JobExecuteAckCommand.class);
+                taskRequest.setTaskId(jobAckCommand.getTaskId());
+                taskRequest.setStartTime(jobAckCommand.getStartTime());
+                taskRequest.setStatus(jobAckCommand.getStatus());
+                taskRequest.setLogPath(jobAckCommand.getLogPath());
+                taskRequest.setExecuteFilePath(jobAckCommand.getExecutePath());
                 break;
             case JOB_EXECUTE_RESPONSE:
-                JobExecuteResponseCommand jobExecuteResponseCommand = FastJsonSerializer.deserialize(command.getBody(), JobExecuteResponseCommand.class);
-                executionJob.setJobInstanceId(jobExecuteResponseCommand.getJobInstanceId());
-                executionJob.setEndTime(jobExecuteResponseCommand.getEndTime());
-                executionJob.setStatus(jobExecuteResponseCommand.getStatus());
-                executionJob.setApplicationIds(jobExecuteResponseCommand.getApplicationIds());
-                executionJob.setProcessId(jobExecuteResponseCommand.getProcessId());
+                JobExecuteResponseCommand jobExecuteResponseCommand = JsonSerializer.deserialize(command.getBody(), JobExecuteResponseCommand.class);
+                taskRequest.setTaskId(jobExecuteResponseCommand.getTaskId());
+                taskRequest.setEndTime(jobExecuteResponseCommand.getEndTime());
+                taskRequest.setStatus(jobExecuteResponseCommand.getStatus());
+                taskRequest.setApplicationId(jobExecuteResponseCommand.getApplicationIds());
+                taskRequest.setProcessId(jobExecuteResponseCommand.getProcessId());
                 break;
             case JOB_KILL_RESPONSE:
                 break;
@@ -144,7 +138,7 @@ public class MetaDataRecover {
                 break;
         }
 
-        return executionJob;
+        return taskRequest;
     }
 
     public void close(){

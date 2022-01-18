@@ -8,23 +8,23 @@ import io.simforce.bytezard.remote.command.CommandCode;
  */
 public class UpdateJobResponseCommand extends BaseCommand{
 
-    private long jobInstanceId;
+    private long taskId;
 
     public UpdateJobResponseCommand(){
         this.commandCode = CommandCode.UPDATE_JOB_RESPONSE;
     }
 
-    public UpdateJobResponseCommand(long jobInstanceId){
-        this.jobInstanceId = jobInstanceId;
+    public UpdateJobResponseCommand(long taskId){
+        this.taskId = taskId;
         this.commandCode = CommandCode.UPDATE_JOB_RESPONSE;
     }
 
-    public long getJobInstanceId() {
-        return jobInstanceId;
+    public long getTaskId() {
+        return taskId;
     }
 
-    public void setJobInstanceId(long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
     }
 
 }

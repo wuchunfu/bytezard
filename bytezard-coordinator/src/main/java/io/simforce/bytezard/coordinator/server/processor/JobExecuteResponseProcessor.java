@@ -1,13 +1,13 @@
 package io.simforce.bytezard.coordinator.server.processor;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.coordinator.server.cache.JobExecuteManager;
 import io.simforce.bytezard.remote.command.Command;
 import io.simforce.bytezard.remote.command.CommandCode;
 import io.simforce.bytezard.remote.command.JobExecuteResponseCommand;
 import io.simforce.bytezard.remote.processor.NettyEventProcessor;
 import io.simforce.bytezard.remote.utils.ChannelUtils;
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +16,6 @@ import com.google.common.base.Preconditions;
 
 import io.netty.channel.Channel;
 
-/**
- * @author zixi0825
- */
 public class JobExecuteResponseProcessor implements NettyEventProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(JobExecuteResponseProcessor.class);
@@ -34,22 +31,23 @@ public class JobExecuteResponseProcessor implements NettyEventProcessor {
         Preconditions.checkArgument(
                 CommandCode.JOB_EXECUTE_RESPONSE == command.getCode(),
                 String.format("invalid command type : %s", command.getCode()));
-        JobExecuteResponseCommand jobExecuteResponseCommand = FastJsonSerializer.deserialize(command.getBody(), JobExecuteResponseCommand.class);
+        JobExecuteResponseCommand jobExecuteResponseCommand = JsonSerializer.deserialize(command.getBody(), JobExecuteResponseCommand.class);
         logger.info("jobExecuteResponseCommand : {}", JSONUtils.toJSONString(jobExecuteResponseCommand));
 
-        ExecutionJob executionJob = jobExecuteManager.getExecutionJob(jobExecuteResponseCommand.getJobInstanceId());
-        if(executionJob == null){
-            executionJob =  new ExecutionJob();
+        TaskRequest taskRequest = jobExecuteManager.getExecutionJob(jobExecuteResponseCommand.getTaskId());
+        if(taskRequest == null){
+            taskRequest =  new TaskRequest();
         }
-        executionJob.setJobInstanceId(jobExecuteResponseCommand.getJobInstanceId());
-        executionJob.setEndTime(jobExecuteResponseCommand.getEndTime());
-        executionJob.setStatus(jobExecuteResponseCommand.getStatus());
-        String workerAddress = ChannelUtils.toAddress(channel).getAddress();
-        executionJob.setExecuteHost(workerAddress);
-        executionJob.setApplicationIds(jobExecuteResponseCommand.getApplicationIds());
-        executionJob.setProcessId(jobExecuteResponseCommand.getProcessId());
 
-        JobResponseContext jobResponseContext = new JobResponseContext(CommandCode.JOB_EXECUTE_RESPONSE, executionJob);
+        taskRequest.setTaskId(jobExecuteResponseCommand.getTaskId());
+        taskRequest.setEndTime(jobExecuteResponseCommand.getEndTime());
+        taskRequest.setStatus(jobExecuteResponseCommand.getStatus());
+        String workerAddress = ChannelUtils.toAddress(channel).getAddress();
+        taskRequest.setExecuteHost(workerAddress);
+        taskRequest.setApplicationId(jobExecuteResponseCommand.getApplicationIds());
+        taskRequest.setProcessId(jobExecuteResponseCommand.getProcessId());
+
+        JobResponseContext jobResponseContext = new JobResponseContext(CommandCode.JOB_EXECUTE_RESPONSE, taskRequest);
 
         jobExecuteManager.putResponse(jobResponseContext);
     }

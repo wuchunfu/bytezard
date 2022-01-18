@@ -10,7 +10,7 @@ import io.simforce.bytezard.common.utils.Stopper;
 import io.simforce.bytezard.common.zookeeper.ZooKeeperClient;
 import io.simforce.bytezard.remote.command.Command;
 import io.simforce.bytezard.remote.connection.ServerConnectionManager;
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,11 +47,11 @@ public class JobResponseCacheProcessor extends Thread {
                 }
 
                 if(CollectionUtils.isNotEmpty(cacheJobs)) {
-                    //key = jobInstanceId_CommandType
+                    //key = taskId_CommandType
                     for (String key:cacheJobs) {
 
                         String commandStr = zooKeeperClient.get(CoreConfig.JOB_RESPONSE_CACHE_PATH+"/"+key);
-                        Command command = FastJsonSerializer.deserialize(commandStr.getBytes(),Command.class);
+                        Command command = JsonSerializer.deserialize(commandStr.getBytes(),Command.class);
 
                         if (command != null) {
                             if (serverConnectionManager.getConnection() == null

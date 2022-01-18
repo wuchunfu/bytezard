@@ -1,20 +1,17 @@
 package io.simforce.bytezard.coordinator.server.processor;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.remote.command.CommandCode;
 
-/**
- * @author zixi0825
- */
 public class JobResponseContext {
 
     private CommandCode commandCode;
 
-    private ExecutionJob executionJob;
+    private TaskRequest taskRequest;
 
-    public JobResponseContext(CommandCode commandCode, ExecutionJob executionJob) {
+    public JobResponseContext(CommandCode commandCode, TaskRequest taskRequest) {
         this.commandCode = commandCode;
-        this.executionJob = executionJob;
+        this.taskRequest = taskRequest;
     }
 
     public CommandCode getCommandCode() {
@@ -25,11 +22,11 @@ public class JobResponseContext {
         this.commandCode = commandCode;
     }
 
-    public ExecutionJob getExecutionJob() {
-        return executionJob;
+    public TaskRequest getTaskRequest() {
+        return taskRequest;
     }
 
-    public void setExecutionJob(ExecutionJob executionJob) {
-        this.executionJob = executionJob;
+    public void setTaskRequest(TaskRequest taskRequest) {
+        this.taskRequest = taskRequest;
     }
 }

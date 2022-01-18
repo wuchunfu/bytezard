@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 
 public class ShellCommandProcess extends BaseCommandProcess {
 
@@ -24,19 +24,19 @@ public class ShellCommandProcess extends BaseCommandProcess {
 
     public ShellCommandProcess(Consumer<List<String>> logHandler,
                                Logger logger,
-                               ExecutionJob executionJob,
+                               TaskRequest taskRequest,
                                Properties properties){
-        super(logHandler,logger, executionJob,properties);
+        super(logHandler,logger, taskRequest,properties);
     }
 
     @Override
     protected String buildCommandFilePath() {
-        return String.format("%s/%s.command", executionJob.getExecutePath(), executionJob.getJobName());
+        return String.format("%s/%s.command", taskRequest.getExecutePath(), taskRequest.getJobName());
     }
 
     @Override
     protected void createCommandFileIfNotExists(String execCommand, String commandFile) throws IOException {
-        logger.info("tenant {},job dir:{}" , executionJob.getTenantCode(), executionJob.getExecutePath());
+        logger.info("tenant {},job dir:{}" , taskRequest.getTenantCode(), taskRequest.getExecutePath());
 
         if(Files.exists(Paths.get(commandFile))){
             Files.delete(Paths.get(commandFile));
@@ -49,8 +49,8 @@ public class ShellCommandProcess extends BaseCommandProcess {
         sb.append("BASEDIR=$(cd `dirname $0`; pwd)\n");
         sb.append("cd $BASEDIR\n");
 
-        if (executionJob.getEnvFile() != null) {
-            sb.append("source ").append(executionJob.getEnvFile()).append("\n");
+        if (taskRequest.getEnvFile() != null) {
+            sb.append("source ").append(taskRequest.getEnvFile()).append("\n");
         }
 
         sb.append("\n\n");

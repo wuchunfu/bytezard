@@ -10,9 +10,6 @@ import io.simforce.bytezard.coordinator.server.channel.ClientChannelManager;
 import io.simforce.bytezard.remote.listener.BaseHandlerListener;
 import io.simforce.bytezard.remote.utils.ChannelUtils;
 
-/**
- * @author zixi0825
- */
 public class RemoveCacheChannelListener extends BaseHandlerListener {
 
     private final Logger logger = LoggerFactory.getLogger(RemoveCacheChannelListener.class);

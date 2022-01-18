@@ -20,7 +20,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 
 /**
  * execution job mapper
@@ -35,7 +35,7 @@ public interface ExecutionJobMapper {
      */
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @Insert("insert into bytezard_execution_job " +
-                "(job_instance_id,job_name," +
+                "(task_id,job_name," +
                 "job_json," +
                 "execute_path," +
                 "log_path," +
@@ -60,7 +60,7 @@ public interface ExecutionJobMapper {
                 "create_time," +
                 "modify_time) " +
             "values " +
-                "(#{jobInstanceId},#{jobName}," +
+                "(#{taskId},#{jobName}," +
                 "#{jobJson}," +
                 "#{executePath}," +
                 "#{logPath}," +
@@ -84,7 +84,7 @@ public interface ExecutionJobMapper {
                 "#{resources}," +
                 "#{createTime}," +
                 "#{modifyTime}) ")
-    int save(ExecutionJob job);
+    int save(TaskRequest job);
 
     /**
      * 获取尚未完成的作业
@@ -92,7 +92,7 @@ public interface ExecutionJobMapper {
      */
     @Results(id = "jobResultMap", value = {
             @Result(property = "id", column = "id", id = true),
-            @Result(property = "jobInstanceId", column = "job_instance_id"),
+            @Result(property = "taskId", column = "task_id"),
             @Result(property = "jobName", column = "job_name"),
             @Result(property = "jobJson", column = "job_json"),
             @Result(property = "executePath", column = "execute_path"),
@@ -119,7 +119,7 @@ public interface ExecutionJobMapper {
             @Result(property = "modifyTime", column = "modify_time")
     })
     @Select("SELECT * from bytezard_execution_job WHERE status in (1,2,10,11)")
-    List<ExecutionJob> getUnfinishedJobs();
+    List<TaskRequest> getUnfinishedJobs();
 
     /**
      * 获取尚未开始的任务
@@ -127,7 +127,7 @@ public interface ExecutionJobMapper {
      */
     @ResultMap("jobResultMap")
     @Select("SELECT * from bytezard_execution_job WHERE status = 0 ")
-    List<ExecutionJob> getUnStartedJobs();
+    List<TaskRequest> getUnStartedJobs();
 
     /**
      * updateById
@@ -159,8 +159,8 @@ public interface ExecutionJobMapper {
                 "resources = #{resources}," +
                 "create_time = #{createTime, jdbcType=TIMESTAMP}," +
                 "modify_time = #{modifyTime, jdbcType=TIMESTAMP} " +
-            "where job_instance_id = #{jobInstanceId}" })
-    int updateById(ExecutionJob job);
+            "where task_id = #{taskId}" })
+    int updateById(TaskRequest job);
 
     /**
      * SELECT BY ID
@@ -168,6 +168,6 @@ public interface ExecutionJobMapper {
      * @return
      */
     @ResultMap("jobResultMap")
-    @Select("SELECT * from bytezard_execution_job WHERE jobInstanceId = #{id} ")
-    ExecutionJob selectById(long id);
+    @Select("SELECT * from bytezard_execution_job WHERE taskId = #{id} ")
+    TaskRequest selectById(long id);
 }

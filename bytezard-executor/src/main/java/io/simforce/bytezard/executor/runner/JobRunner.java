@@ -1,9 +1,10 @@
 package io.simforce.bytezard.executor.runner;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.enums.ExecutionStatus;
 import io.simforce.bytezard.common.spi.PluginLoader;
 import io.simforce.bytezard.common.utils.LoggerUtils;
@@ -18,21 +19,21 @@ public class JobRunner implements Runnable {
 
     private final Logger logger = LoggerFactory.getLogger(JobRunner.class);
 
-    private final ExecutionJob executionJob;
+    private final TaskRequest taskRequest;
 
     private final JobCallbackService jobCallbackService;
 
     private EngineExecutor engineExecutor;
 
-    public JobRunner(ExecutionJob executionJob, JobCallbackService jobCallbackService){
+    public JobRunner(TaskRequest taskRequest, JobCallbackService jobCallbackService){
         this.jobCallbackService = jobCallbackService;
-        this.executionJob = executionJob;
+        this.taskRequest = taskRequest;
     }
 
     @Override
     public void run() {
         JobExecuteResponseCommand responseCommand =
-                new JobExecuteResponseCommand(this.executionJob.getJobInstanceId());
+                new JobExecuteResponseCommand(this.taskRequest.getTaskId());
         try{
             //下载资源文件
 //            downloadResource(executionJob.getExecutePath(),
@@ -42,22 +43,22 @@ public class JobRunner implements Runnable {
 //            executionJob.setEnvFile(CommonUtils.getSystemEnvPath());
 //            executionJob.setGlobalParameters();
 
-            // 生成此次任务的唯一ID，platform_jobType_jobInstanceId
-            executionJob.setJobUniqueId(String.format(
-                    "%s_%s",
-                    executionJob.getEngineType(),
-                    executionJob.getJobInstanceId()));
+            // 生成此次任务的唯一ID，platform_jobType_taskId
+//            taskRequest.setJobUniqueId(String.format(
+//                    "%s_%s",
+//                    taskRequest.getEngineType(),
+//                    taskRequest.getTaskId()));
 
             // custom logger
             Logger jobLogger = LoggerFactory.getLogger(
                     LoggerUtils.buildJobUniqueId(LoggerUtils.JOB_LOGGER_INFO_PREFIX,
-                            executionJob.getEngineType(),
-                            executionJob.getJobInstanceId()));
+                            taskRequest.getEngineType(),
+                            taskRequest.getTaskId()));
 
             engineExecutor = PluginLoader
                     .getPluginLoader(EngineExecutor.class)
-                    .getNewPlugin(executionJob.getEngineType());
-            engineExecutor.setExecutionJob(executionJob);
+                    .getNewPlugin(taskRequest.getEngineType());
+            engineExecutor.setTaskRequest(taskRequest);
             engineExecutor.setLogger(jobLogger);
 
             engineExecutor.init();
@@ -70,7 +71,7 @@ public class JobRunner implements Runnable {
                 responseCommand.setStatus(engineExecutor.getProcessResult().getExitStatusCode());
             }
 
-            responseCommand.setEndTime(new Date());
+            responseCommand.setEndTime(LocalDateTime.now());
             responseCommand.setApplicationIds(engineExecutor.getProcessResult().getApplicationId());
             responseCommand.setProcessId(engineExecutor.getProcessResult().getProcessId());
 
@@ -87,11 +88,11 @@ public class JobRunner implements Runnable {
                 logger.error("job scheduler failure", ex);
             }
 
-            responseCommand.setEndTime(new Date());
+            responseCommand.setEndTime(LocalDateTime.now());
             responseCommand.setApplicationIds(engineExecutor.getProcessResult().getApplicationId());
             responseCommand.setProcessId(engineExecutor.getProcessResult().getProcessId());
         } finally {
-            jobCallbackService.sendResult(executionJob.getJobInstanceId(), responseCommand.convert2Command());
+            jobCallbackService.sendResult(taskRequest.getTaskId(), responseCommand.convert2Command());
         }
     }
 

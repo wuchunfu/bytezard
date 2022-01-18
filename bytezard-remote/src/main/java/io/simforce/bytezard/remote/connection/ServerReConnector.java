@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import io.simforce.bytezard.remote.BytezardRemoteClient;
 import io.simforce.bytezard.remote.command.PingCommand;
 import io.simforce.bytezard.remote.command.RequestClientType;
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 import io.simforce.bytezard.remote.utils.Host;
 import io.simforce.bytezard.remote.utils.NamedThreadFactory;
 import io.simforce.bytezard.common.entity.MasterInfo;
@@ -54,7 +54,7 @@ public abstract class ServerReConnector {
                     }
                 },10,TimeUnit.SECONDS);
             } else {
-                MasterInfo masterInfo = FastJsonSerializer.deserialize(masterNode,MasterInfo.class);
+                MasterInfo masterInfo = JsonSerializer.deserialize(masterNode,MasterInfo.class);
                 if(masterInfo != null) {
                     Host host = new Host(masterInfo.getIp(), masterInfo.getRpcPort());
                     Channel channel = bytezardRemoteClient.doConnect(host,true);

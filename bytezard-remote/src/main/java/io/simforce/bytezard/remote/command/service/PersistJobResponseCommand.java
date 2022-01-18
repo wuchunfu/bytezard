@@ -8,23 +8,23 @@ import io.simforce.bytezard.remote.command.CommandCode;
  */
 public class PersistJobResponseCommand extends BaseCommand{
 
-    private long jobInstanceId;
+    private long taskId;
 
     public PersistJobResponseCommand(){
         this.commandCode = CommandCode.PERSIST_JOB_RESPONSE;
     }
 
-    public PersistJobResponseCommand(long jobInstanceId){
-        this.jobInstanceId = jobInstanceId;
+    public PersistJobResponseCommand(long taskId){
+        this.taskId = taskId;
         this.commandCode = CommandCode.PERSIST_JOB_RESPONSE;
     }
 
-    public long getJobInstanceId() {
-        return jobInstanceId;
+    public long getTaskId() {
+        return taskId;
     }
 
-    public void setJobInstanceId(long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
     }
 
 }

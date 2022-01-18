@@ -5,7 +5,7 @@ import io.simforce.bytezard.remote.command.Command;
 import io.simforce.bytezard.remote.command.CommandCode;
 import io.simforce.bytezard.remote.command.PongCommand;
 import io.simforce.bytezard.remote.processor.NettyEventProcessor;
-import io.simforce.bytezard.remote.utils.FastJsonSerializer;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class PongProcessor implements NettyEventProcessor {
                 String.format("invalid command type : %s", command.getCode()));
 
         PongCommand pongCommand =
-                FastJsonSerializer.deserialize(command.getBody(),PongCommand.class);
+                JsonSerializer.deserialize(command.getBody(),PongCommand.class);
 
         logger.info(JSONUtils.toJsonString(pongCommand));
     }

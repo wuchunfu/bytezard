@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.simforce.bytezard.remote.utils;
 
-import com.alibaba.fastjson.JSON;
+import io.simforce.bytezard.common.utils.JSONUtils;
 
 /**
  *  json serialize or deserialize
  */
-public class FastJsonSerializer {
+public class JsonSerializer {
 
 	/**
 	 * serialize to byte
@@ -31,8 +32,7 @@ public class FastJsonSerializer {
 	 * @return byte array
 	 */
 	public static <T> byte[] serialize(T obj)  {
-		String json = JSON.toJSONString(obj);
-		return json.getBytes(Constants.UTF8);
+		return JSONUtils.toJsonByteArray(obj);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class FastJsonSerializer {
 	 * @return string
 	 */
 	public static <T> String serializeToString(T obj)  {
-		return JSON.toJSONString(obj);
+		return JSONUtils.toJsonString(obj);
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class FastJsonSerializer {
 	 * @return deserialize type
 	 */
 	public static <T> T deserialize(byte[] src, Class<T> clazz) {
-		return JSON.parseObject(src, clazz);
+		return JSONUtils.parseObject(src, clazz);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class FastJsonSerializer {
 	 * @return deserialize type
 	 */
 	public static <T> T deserialize(String src, Class<T> clazz) {
-		return JSON.parseObject(src, clazz);
+		return JSONUtils.parseObject(src, clazz);
 	}
 
 }

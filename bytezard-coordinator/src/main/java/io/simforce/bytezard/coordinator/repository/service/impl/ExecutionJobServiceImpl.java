@@ -2,7 +2,7 @@ package io.simforce.bytezard.coordinator.repository.service.impl;
 
 import java.util.List;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.coordinator.repository.mapper.ExecutionJobMapper;
 import io.simforce.bytezard.coordinator.repository.service.ExecutionJobService;
 
@@ -13,9 +13,6 @@ import com.github.pagehelper.PageInfo;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-/**
- * @author zixi0825
- */
 @Singleton
 public class ExecutionJobServiceImpl implements ExecutionJobService {
 
@@ -23,14 +20,14 @@ public class ExecutionJobServiceImpl implements ExecutionJobService {
     private ExecutionJobMapper executionJobMapper;
 
     @Override
-    public long save(ExecutionJob job){
+    public long save(TaskRequest job){
         return executionJobMapper.save(job);
     }
 
     @Override
-    public List<ExecutionJob> getUnfinishedJobs(){
+    public List<TaskRequest> getUnfinishedJobs(){
 
-        PageInfo<ExecutionJob> pageInfo = PageHelper.startPage(1, 5).doSelectPageInfo(new ISelect() {
+        PageInfo<TaskRequest> pageInfo = PageHelper.startPage(1, 5).doSelectPageInfo(new ISelect() {
             @Override
             public void doSelect() {
                 executionJobMapper.getUnfinishedJobs();
@@ -42,8 +39,8 @@ public class ExecutionJobServiceImpl implements ExecutionJobService {
     }
 
     @Override
-    public List<ExecutionJob> getUnStartedJobs(){
-        Page<ExecutionJob> page = PageHelper.startPage(1, 10).doSelectPage(new ISelect() {
+    public List<TaskRequest> getUnStartedJobs(){
+        Page<TaskRequest> page = PageHelper.startPage(1, 10).doSelectPage(new ISelect() {
             @Override
             public void doSelect() {
                 executionJobMapper.getUnStartedJobs();
@@ -55,12 +52,12 @@ public class ExecutionJobServiceImpl implements ExecutionJobService {
     }
 
     @Override
-    public int updateById(ExecutionJob job){
+    public int updateById(TaskRequest job){
         return executionJobMapper.updateById(job);
     }
 
     @Override
-    public ExecutionJob getById(long jobInstanceId){
-        return executionJobMapper.selectById(jobInstanceId);
+    public TaskRequest getById(long taskId){
+        return executionJobMapper.selectById(taskId);
     }
 }

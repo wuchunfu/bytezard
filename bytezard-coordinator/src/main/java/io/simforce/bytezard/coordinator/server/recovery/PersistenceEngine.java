@@ -2,7 +2,7 @@ package io.simforce.bytezard.coordinator.server.recovery;
 
 import java.util.List;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 
 
 /**
@@ -19,15 +19,15 @@ public interface PersistenceEngine {
      * @param name
      * @param job
      */
-    long persist(String name, ExecutionJob job);
+    long persist(String name, TaskRequest job);
 
     void unPersist(String name);
 
-    void update(String name, ExecutionJob job);
+    void update(String name, TaskRequest job);
 
-    List<ExecutionJob> getUnStartedJobs();
+    List<TaskRequest> getUnStartedJobs();
 
-    List<ExecutionJob> getUnFinishedJobs();
+    List<TaskRequest> getUnFinishedJobs();
 
-    ExecutionJob getById(long id);
+    TaskRequest getById(long id);
  }

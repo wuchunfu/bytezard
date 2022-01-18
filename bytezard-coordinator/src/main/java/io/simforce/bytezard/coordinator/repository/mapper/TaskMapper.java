@@ -4,12 +4,12 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-import io.simforce.bytezard.coordinator.repository.entity.JobInstance;
+import io.simforce.bytezard.coordinator.repository.entity.Task;
 
 /**
  * @author zixi0825
  */
-public interface JobInstanceMapper {
+public interface TaskMapper {
 
     /**
      * 返回主键字段id值
@@ -17,7 +17,7 @@ public interface JobInstanceMapper {
      * @return
      */
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
-    @Insert("insert into bytezard_job_instance " +
+    @Insert("insert into bytezard_task " +
                 "(name," +
                 "job_id," +
                 "parameter," +
@@ -57,7 +57,7 @@ public interface JobInstanceMapper {
                 "#{endTime}," +
                 "#{createTime}," +
                 "#{updateTime}) ")
-    int save(JobInstance job);
+    int save(Task job);
 
     /**
      * updateById
@@ -65,7 +65,7 @@ public interface JobInstanceMapper {
      * @return
      */
 
-    @Update({ "update bytezard_job_instance set " +
+    @Update({ "update bytezard_task set " +
             "name = #{name}," +
             "job_id = #{jobId}," +
             "parameter = #{parameter}," +
@@ -86,7 +86,7 @@ public interface JobInstanceMapper {
             "create_time = #{createTime, jdbcType=TIMESTAMP}," +
             "update_time = #{updateTime, jdbcType=TIMESTAMP} " +
             "where id = #{id}" })
-    int updateById(JobInstance job);
+    int updateById(Task job);
 
     /**
      * SELECT BY ID
@@ -115,8 +115,8 @@ public interface JobInstanceMapper {
             @Result(property = "createTime", column = "create_time"),
             @Result(property = "updateTime", column = "update_time")
     })
-    @Select("SELECT * from bytezard_job_instance WHERE id = #{id} ")
-    JobInstance getById(long id);
+    @Select("SELECT * from bytezard_task WHERE id = #{id} ")
+    Task getById(long id);
 
     /**
      * SELECT BY ID
@@ -124,15 +124,15 @@ public interface JobInstanceMapper {
      * @return
      */
     @ResultMap("resultMap")
-    @Select("SELECT * from bytezard_job_instance WHERE execution_id = #{executionId} ")
-    JobInstance getByExecutionId(long executionId);
+    @Select("SELECT * from bytezard_task WHERE execution_id = #{executionId} ")
+    Task getByExecutionId(long executionId);
 
     /**
      * SELECT BY ID
      * @param id
      * @return
      */
-    @Delete("delete from bytezard_job_instance WHERE id = #{id} ")
+    @Delete("delete from bytezard_task WHERE id = #{id} ")
     int deleteById(long id);
 
     /**
@@ -141,6 +141,6 @@ public interface JobInstanceMapper {
      * @return
      */
     @ResultMap("resultMap")
-    @Select("SELECT * from bytezard_job_instance WHERE project_id = #{projectId} ")
-    List<JobInstance> listByProjectId(long projectId);
+    @Select("SELECT * from bytezard_task WHERE project_id = #{projectId} ")
+    List<Task> listByProjectId(long projectId);
 }

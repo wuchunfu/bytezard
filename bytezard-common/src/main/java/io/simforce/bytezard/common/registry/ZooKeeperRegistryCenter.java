@@ -5,9 +5,7 @@ import java.util.Set;
 import io.simforce.bytezard.common.config.CoreConfig;
 import io.simforce.bytezard.common.zookeeper.ZooKeeperClient;
 
-/**
- * @author zixi0825
- */
+
 
 public class ZooKeeperRegistryCenter implements IRegistryCenter {
 

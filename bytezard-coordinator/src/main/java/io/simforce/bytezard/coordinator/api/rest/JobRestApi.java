@@ -11,13 +11,13 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.entity.LogResult;
 import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.coordinator.api.entity.Result;
-import io.simforce.bytezard.coordinator.repository.entity.JobInstance;
+import io.simforce.bytezard.coordinator.repository.entity.Task;
 import io.simforce.bytezard.coordinator.repository.module.BytezardCoordinatorInjector;
-import io.simforce.bytezard.coordinator.repository.service.JobInstanceService;
+import io.simforce.bytezard.coordinator.repository.service.TaskService;
 
 @Path("/job")
 @Produces(MediaType.APPLICATION_JSON)
@@ -28,9 +28,9 @@ public class JobRestApi {
 
     private AtomicInteger id = new AtomicInteger(1);
 
-    private final JobInstanceService jobInstanceService =
+    private final TaskService taskService =
                         BytezardCoordinatorInjector.getInjector()
-                        .getInstance(JobInstanceService.class);
+                        .getInstance(TaskService.class);
 
     /**
      * execute
@@ -40,16 +40,15 @@ public class JobRestApi {
     @Path("/execute")
     public Result execute(Map<String,Object> params) {
         Result<Boolean> result = new Result<>();
-        ExecutionJob executionJob = new ExecutionJob();
-        executionJob.setJobName((String)params.get("jobName"));
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setTaskName((String)params.get("jobName"));
 //        executionJob.setJobType((String)params.get("jobType"));
-        executionJob.setJobParameters((String)params.get("jobParameters"));
-        executionJob.setTimeout((Integer)params.get("timeout"));
-        executionJob.setTimeoutStrategy((Integer)params.get("timeoutStrategy"));
-        executionJob.setRetryNums((Integer)params.get("retryNums"));
-        executionJob.setSubmitTime(new Date());
-        executionJob.setTenantCode((String)params.get("tenantCode"));
-        executionJob.setApplicationIds((String)params.get("applicationIds"));
+        taskRequest.setApplicationParameter((String)params.get("jobParameters"));
+        taskRequest.setTimeout((Integer)params.get("timeout"));
+        taskRequest.setTimeoutStrategy((Integer)params.get("timeoutStrategy"));
+        taskRequest.setRetryTimes((Integer)params.get("retryNums"));
+        taskRequest.setTenantCode((String)params.get("tenantCode"));
+        taskRequest.setApplicationId((String)params.get("applicationIds"));
         logger.info(JSONUtils.toJsonString(params));
         result.setCode(0);
         result.setData(true);
@@ -64,26 +63,26 @@ public class JobRestApi {
     @Path("/kill")
     public Result kill(Map<String,Object> params){
 
-        Result<JobInstance> result = new Result<>();
-        Long jobInstanceId = Long.valueOf((Integer)params.get("jobInstanceId"));
+        Result<Task> result = new Result<>();
+        Long taskId = Long.valueOf((Integer)params.get("taskId"));
         result.setCode(0);
-        result.setData(jobInstanceService.getById(jobInstanceId));
+        result.setData(taskService.getById(taskId));
         return result;
     }
 
     /**
      * get the log by id,skipLine,limit
-     * @param jobInstanceId
+     * @param taskId
      * @param offsetLine
      * @param limit
      * @return
      */
     @GET
-    @Path("/get-log/{jobInstanceId}/{offsetLine}/{limit}")
-    public Result getLog(@PathParam("jobInstanceId") long jobInstanceId,@PathParam("offsetLine")int offsetLine,@PathParam("limit") int limit){
+    @Path("/get-log/{taskId}/{offsetLine}/{limit}")
+    public Result getLog(@PathParam("taskId") long taskId,@PathParam("offsetLine")int offsetLine,@PathParam("limit") int limit){
         Result<LogResult> result = new Result<>();
 
-//        LogResult logResult = mangerClient.getLog(jobInstanceId,offsetLine,limit);
+//        LogResult logResult = mangerClient.getLog(taskId,offsetLine,limit);
         result.setCode(0);
         result.setData(null);
 
@@ -93,15 +92,15 @@ public class JobRestApi {
 
     /**
      * get the whole log
-     * @param jobInstanceId
+     * @param taskId
      * @return
      */
     @GET
-    @Path("/get-all-log/{jobInstanceId}")
-    public Result getAllLog(@PathParam("jobInstanceId") long jobInstanceId){
+    @Path("/get-all-log/{taskId}")
+    public Result getAllLog(@PathParam("taskId") long taskId){
         Result<LogResult> result = new Result<>();
 
-//        LogResult logResult = mangerClient.getAllLog(jobInstanceId);
+//        LogResult logResult = mangerClient.getAllLog(taskId);
         result.setCode(0);
         result.setData(null);
 
@@ -110,16 +109,16 @@ public class JobRestApi {
 
     /**
      * download log
-     * @param jobInstanceId
+     * @param taskId
      * @param request
      * @param response
      * @return
      * @throws Exception
      */
     @GET
-    @Path("download-log/{jobInstanceId}")
+    @Path("download-log/{taskId}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public byte[] download(@PathParam("jobInstanceId") long jobInstanceId,
+    public byte[] download(@PathParam("taskId") long taskId,
                            @Context HttpServletRequest request,
                            @Context HttpServletResponse response)throws Exception{
 

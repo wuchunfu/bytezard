@@ -8,24 +8,21 @@ import org.slf4j.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.coordinator.repository.entity.Command;
-import io.simforce.bytezard.coordinator.repository.entity.JobDefinition;
-import io.simforce.bytezard.coordinator.repository.entity.JobInstance;
+import io.simforce.bytezard.coordinator.repository.entity.Job;
+import io.simforce.bytezard.coordinator.repository.entity.Task;
 import io.simforce.bytezard.coordinator.repository.service.CommandService;
 import io.simforce.bytezard.coordinator.repository.service.ExecutionJobService;
-import io.simforce.bytezard.coordinator.repository.service.JobInstanceService;
-import io.simforce.bytezard.coordinator.repository.service.JobDefinitionService;
+import io.simforce.bytezard.coordinator.repository.service.TaskService;
+import io.simforce.bytezard.coordinator.repository.service.JobService;
 
-/**
- * @author zixi0825
- */
 @Singleton
 public class JobExternalService {
     
     @Inject
-    private JobInstanceService jobInstanceService;
+    private TaskService taskService;
 
     @Inject
     private CommandService commandService;
@@ -34,19 +31,19 @@ public class JobExternalService {
     private ExecutionJobService executionJobService;
 
     @Inject
-    private JobDefinitionService jobDefinitionService;
+    private JobService jobService;
 
-    public JobDefinition getJobDefinitionById(Long id) {
-        return jobDefinitionService.getById(id);
+    public Job getJobById(Long id) {
+        return jobService.getById(id);
     }
 
-    public JobInstance findJobInstanceById(Long id){
-        return jobInstanceService.getById(id);
+    public Task getTaskById(Long id){
+        return taskService.getById(id);
     }
 
-    public JobInstance submitJob(JobInstance jobInstance){
-        jobInstanceService.save(jobInstance);
-        return jobInstance;
+    public Task submitJob(Task task){
+        taskService.save(task);
+        return task;
     }
 
     public Command getCommand(){
@@ -57,31 +54,49 @@ public class JobExternalService {
         return commandService.deleteById(id);
     }
 
-    public JobInstance executeCommand(Logger logger, int remainThread, Command command){
+    public Task executeCommand(Logger logger, int remainThread, Command command){
         Map<String, String> commandParameter = JSONUtils.toMap(command.getParameter());
-        JobInstance jobInstance = jobInstanceService.getById(Long.parseLong(commandParameter.get("job_instance_id")));
-        jobInstance.setStartTime(LocalDateTime.now());
-        jobInstanceService.updateById(jobInstance);
-        return jobInstance;
+        Task task = taskService.getById(Long.parseLong(commandParameter.get("task_id")));
+        task.setStartTime(LocalDateTime.now());
+        taskService.updateById(task);
+        return task;
     }
 
-    public JobInstance getJobInstanceByExecutionId(long executionId){
-        return jobInstanceService.getByExecutionId(executionId);
+    public int updateTask(Task task){
+        return taskService.updateById(task);
     }
 
-    public int updateJobInstance(JobInstance jobInstance){
-        return jobInstanceService.updateById(jobInstance);
-    }
-
-    public Long insertJobInstance(JobInstance jobInstance){
-        return jobInstanceService.save(jobInstance);
+    public Long insertTask(Task task){
+        return taskService.save(task);
     }
 
     public Long insertCommand(Command command){
         return commandService.save(command);
     }
 
-    public Long insertExecutionJob(ExecutionJob executionJob){
-        return executionJobService.save(executionJob);
+    public void updateTaskStatus(Long taskId, int status){
+        Task task = getTaskById(taskId);
+        task.setStatus(status);
+        updateTask(task);
     }
+
+    public void updateTaskRetryTimes(Long taskId, int times) {
+        Task task = getTaskById(taskId);
+        task.setRetryTimes(times);
+        updateTask(task);
+    }
+
+    public TaskRequest buildTaskRequest(Task task){
+        // need to convert job parameter to other parameter
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setTaskName(task.getName());
+//        taskRequest(task.getParameter());
+////        executionJob.setJobType(task.getType());
+//        taskRequest.setTenantCode(task.getTenantCode());
+//        taskRequest.setEnvFile(task.getEnvFile());
+//        taskRequest.setResources(task.getResources());
+//        taskRequest.setTimeout(task.getTimeout());
+        return taskRequest;
+    }
+
 }

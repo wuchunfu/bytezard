@@ -70,12 +70,12 @@ public class FileUtils {
         logger.info("create user name success {}", userName);
     }
 
-    public static String getJobExecDir(String jobType, long jobInstanceId) {
+    public static String getJobExecDir(String jobType, long taskId) {
         String fileName = String.format(
                 "%s/exec/job/%s/%s",
                 "/bytezard",
                 jobType,
-                jobInstanceId);
+                taskId);
         File file = new File(fileName);
         if (!file.getParentFile().exists()){
             file.getParentFile().mkdirs();

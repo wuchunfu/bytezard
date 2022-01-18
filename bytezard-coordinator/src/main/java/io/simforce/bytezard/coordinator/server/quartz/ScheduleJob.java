@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -36,8 +35,8 @@ import io.simforce.bytezard.common.utils.DateUtils;
 import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.coordinator.CoordinatorConstants;
 import io.simforce.bytezard.coordinator.repository.entity.Command;
-import io.simforce.bytezard.coordinator.repository.entity.JobDefinition;
-import io.simforce.bytezard.coordinator.repository.entity.JobInstance;
+import io.simforce.bytezard.coordinator.repository.entity.Job;
+import io.simforce.bytezard.coordinator.repository.entity.Task;
 import io.simforce.bytezard.coordinator.eunms.CommandType;
 import io.simforce.bytezard.common.enums.ExecutionStatus;
 import io.simforce.bytezard.coordinator.repository.module.BytezardCoordinatorInjector;
@@ -46,7 +45,7 @@ import io.simforce.bytezard.coordinator.repository.service.impl.JobExternalServi
 /**
  * process schedule job
  */
-public class ScheduleJob implements Job {
+public class ScheduleJob implements org.quartz.Job {
 
     /**
      * logger of FlowScheduleJob
@@ -76,15 +75,15 @@ public class ScheduleJob implements Job {
 
         logger.info("scheduled fire time :{}, fire time :{}, process id :{}", scheduleTime, fireTime, projectJobId);
 
-        JobDefinition jobDefinition = getJobExternalService().getJobDefinitionById(projectJobId);
-        if (jobDefinition == null) {
+        Job job = getJobExternalService().getJobById(projectJobId);
+        if (job == null) {
             logger.warn("job {} is null", projectJobId);
             return;
         }
 
-        JobInstance jobInstance = createJobInstance(jobDefinition,scheduleTime);
+        Task task = createTask(job,scheduleTime);
 
-        createCommand(jobInstance,scheduleTime,fireTime);
+        createCommand(task,scheduleTime,fireTime);
     }
 
     private void deleteJob(Long projectId, long scheduleId) throws RuntimeException{
@@ -99,31 +98,29 @@ public class ScheduleJob implements Job {
         }
     }
 
-    private JobInstance createJobInstance(JobDefinition jobDefinition, LocalDateTime scheduleTime){
-        JobInstance jobInstance = new JobInstance();
-        jobInstance.setName(jobDefinition.getName());
-        jobInstance.setJobDefinitionId(jobDefinition.getId());
-        jobInstance.setProjectId(jobDefinition.getProjectId());
-        jobInstance.setParameter(jobDefinition.getParameter());
-        jobInstance.setJson(jobDefinition.getJson());
-        jobInstance.setStatus(ExecutionStatus.SUBMITTED_SUCCESS.getCode());
-        jobInstance.setRetryTimes(jobDefinition.getRetryTimes());
-        jobInstance.setRetryInterval(jobDefinition.getRetryInterval());
-        jobInstance.setTimeout(jobDefinition.getTimeout());
-        jobInstance.setTimeoutStrategy(jobDefinition.getTimeoutStrategy());
-        jobInstance.setTenantCode(jobDefinition.getTenantCode());
-        jobInstance.setEnvFile(jobDefinition.getEnvFile());
-        jobInstance.setResources(jobDefinition.getResources());
-        jobInstance.setSubmitTime(scheduleTime);
-        jobInstance.setCreateTime(LocalDateTime.now());
-        jobInstance.setUpdateTime(LocalDateTime.now());
+    private Task createTask(Job job, LocalDateTime scheduleTime){
+        Task task = new Task();
+        task.setName(job.getName());
+        task.setJobId(job.getId());
+        task.setProjectId(job.getProjectId());
+        task.setParameter(job.getParameter());
+        task.setStatus(ExecutionStatus.SUBMITTED_SUCCESS.getCode());
+        task.setRetryTimes(job.getRetryTimes());
+        task.setRetryInterval(job.getRetryInterval());
+        task.setTimeout(job.getTimeout());
+        task.setTimeoutStrategy(job.getTimeoutStrategy());
+        task.setTenantCode(job.getTenantCode());
+        task.setResources(job.getResources());
+        task.setSubmitTime(scheduleTime);
+        task.setCreateTime(LocalDateTime.now());
+        task.setUpdateTime(LocalDateTime.now());
 
-        return jobInstance;
+        return task;
     }
 
-    private void createCommand(JobInstance jobInstance, LocalDateTime scheduleTime, LocalDateTime fireTime) {
+    private void createCommand(Task task, LocalDateTime scheduleTime, LocalDateTime fireTime) {
         Command command = new Command();
-        command.setJobId(jobInstance.getJobDefinitionId());
+        command.setJobId(task.getJobId());
         command.setType(CommandType.SCHEDULER);
         command.setPriority(1);
         command.setCreateTime(LocalDateTime.now());
@@ -137,7 +134,7 @@ public class ScheduleJob implements Job {
         }else{
             cmdParam = Maps.newHashMap();
         }
-        cmdParam.put("flow_instance_id",String.valueOf(jobInstance.getId()));
+        cmdParam.put("flow_instance_id",String.valueOf(task.getId()));
         command.setParameter(JSONUtils.toJsonString(cmdParam));
 
         getJobExternalService().insertCommand(command);

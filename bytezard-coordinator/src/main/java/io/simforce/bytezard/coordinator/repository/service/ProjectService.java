@@ -7,9 +7,6 @@ import com.github.pagehelper.PageInfo;
 
 import io.simforce.bytezard.coordinator.repository.entity.Project;
 
-/**
- * @author zixi0825
- */
 public interface ProjectService  {
 
     PageInfo<Project> page(Map<String, Object> params);

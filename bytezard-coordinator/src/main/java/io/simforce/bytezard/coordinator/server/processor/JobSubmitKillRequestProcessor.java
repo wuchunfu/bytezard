@@ -8,16 +8,11 @@ import io.simforce.bytezard.remote.command.JobSubmitKillRequestCommand;
 import io.simforce.bytezard.remote.processor.NettyEventProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
 import com.google.common.base.Preconditions;
 
 import io.netty.channel.Channel;
+import io.simforce.bytezard.remote.utils.JsonSerializer;
 
-
-/**
- * @author zixi0825
- */
 public class JobSubmitKillRequestProcessor implements NettyEventProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(JobSubmitKillRequestProcessor.class);
@@ -34,7 +29,7 @@ public class JobSubmitKillRequestProcessor implements NettyEventProcessor {
                 CommandCode.JOB_KILL_REQUEST == command.getCode(),
                 String.format("invalid command type : %s", command.getCode()));
         JobSubmitKillRequestCommand jobSubmitKillRequestCommand =
-                JSON.parseObject(new String(command.getBody()), JobSubmitKillRequestCommand.class);
+                JsonSerializer.deserialize(new String(command.getBody()), JobSubmitKillRequestCommand.class);
 
         JobSubmitAckCommand jobSubmitKillAckCommand = new JobSubmitAckCommand();
 
@@ -45,8 +40,7 @@ public class JobSubmitKillRequestProcessor implements NettyEventProcessor {
             return;
         }
 
-
-        jobExecuteManager.addKillCommand(jobSubmitKillRequestCommand.getJobInstanceId());
+        jobExecuteManager.addKillCommand(jobSubmitKillRequestCommand.getTaskId());
 
         jobSubmitKillAckCommand.setCode(1);
         jobSubmitKillAckCommand.setMsg("submit kill job success");

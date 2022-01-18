@@ -3,7 +3,7 @@ package io.simforce.bytezard.engine.executor.spark;
 import org.slf4j.Logger;
 
 import io.simforce.bytezard.common.config.BytezardConfiguration;
-import io.simforce.bytezard.common.entity.ExecutionJob;
+import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.entity.ProcessResult;
 import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.engine.api.engine.EngineExecutor;
@@ -15,14 +15,14 @@ public class SparkEngineExecutor implements EngineExecutor {
     private final ConfigurationParser<BytezardConfiguration> configurationParser
             = new SparkConfigurationParser();
 
-    private ExecutionJob executionJob;
+    private TaskRequest taskRequest;
 
     @Override
     public void init() throws Exception {
         //读取每个引擎特有参数
         //读取数据质量检查标准参数
         BytezardConfiguration configuration =
-                JSONUtils.parseObject(executionJob.getBytezardConfiguration(),BytezardConfiguration.class);
+                JSONUtils.parseObject(taskRequest.getBytezardConfiguration(),BytezardConfiguration.class);
         configurationParser.parse(configuration);
         //将标准参数转换为引擎可执行参数,生成一个application.conf
         //执行检查任务
@@ -59,12 +59,12 @@ public class SparkEngineExecutor implements EngineExecutor {
     }
 
     @Override
-    public void setExecutionJob(ExecutionJob executionJob) {
-        this.executionJob = executionJob;
+    public void setTaskRequest(TaskRequest taskRequest) {
+        this.taskRequest = taskRequest;
     }
 
     @Override
-    public ExecutionJob getExecutionJob() {
+    public TaskRequest getTaskRequest() {
         return null;
     }
 
