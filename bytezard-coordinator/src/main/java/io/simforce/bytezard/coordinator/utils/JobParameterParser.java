@@ -10,7 +10,7 @@ import java.util.List;
 
 public class JobParameterParser {
 
-    public BytezardConfiguration parse(JobParameter jobParameter) {
+    public static BytezardConfiguration parse(JobParameter jobParameter) {
         BytezardConfiguration configuration = new BytezardConfiguration();
         EnvConfig envConfig = new EnvConfig();
         envConfig.setEngine(jobParameter.getEngineType());
@@ -25,6 +25,12 @@ public class JobParameterParser {
         });
 
 
+        //get the actual value storage parameter
+
+        //get the error data storage parameter
+        // support file(hdfs/minio/s3)/es
+
+        //get the task data storage parameter
 
         configuration.setEnvConfig(envConfig);
         configuration.setSourceParameters(sourceConfigs);

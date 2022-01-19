@@ -10,7 +10,7 @@ import io.simforce.bytezard.common.config.Config;
 
 public class TypesafeConfigUtils {
 
-    private static Logger logger = LoggerFactory.getLogger(TypesafeConfigUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(TypesafeConfigUtils.class);
     /**
      * Extract sub config with fixed prefix
      *

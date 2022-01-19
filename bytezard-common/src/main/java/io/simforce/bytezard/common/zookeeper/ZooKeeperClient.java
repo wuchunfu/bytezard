@@ -13,6 +13,7 @@ import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -79,7 +80,7 @@ public class ZooKeeperClient {
 
     public String get(final String key) {
         try {
-            return new String(client.getData().forPath(key), "UTF-8");
+            return new String(client.getData().forPath(key), StandardCharsets.UTF_8);
         } catch (Exception ex) {
             logger.error("get key : {}", key, ex);
         }
@@ -115,7 +116,7 @@ public class ZooKeeperClient {
     public void persist(final String key, final String value) {
         try {
             if (!isExisted(key)) {
-                client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(key, value.getBytes("UTF-8"));
+                client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(key, value.getBytes(StandardCharsets.UTF_8));
             } else {
                 update(key, value);
             }
@@ -126,7 +127,7 @@ public class ZooKeeperClient {
 
     public void update(final String key, final String value) {
         try {
-            client.inTransaction().check().forPath(key).and().setData().forPath(key, value.getBytes("UTF-8")).and().commit();
+            client.inTransaction().check().forPath(key).and().setData().forPath(key, value.getBytes(StandardCharsets.UTF_8)).and().commit();
         } catch (Exception ex) {
             logger.error("update key : "+key+ ",value : "+value, ex);
         }
@@ -141,7 +142,7 @@ public class ZooKeeperClient {
                     //NOP
                 }
             }
-            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes("UTF-8"));
+            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(StandardCharsets.UTF_8));
         } catch (final Exception ex) {
             logger.error("persistEphemeral key : "+key+ ",value : "+value, ex);
         }
@@ -153,7 +154,7 @@ public class ZooKeeperClient {
                 persistEphemeral(key, value);
             } else {
                 if (!isExisted(key)) {
-                    client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes("UTF-8"));
+                    client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(StandardCharsets.UTF_8));
                 }
             }
         } catch (final Exception ex) {

@@ -29,10 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -40,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -65,7 +62,7 @@ public class JSONUtils {
     /**
      * can use static singleton, inject: just make sure to reuse!
      */
-    private static final ObjectMapper objectMapper = new ObjectMapper()
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
             .configure(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
             .configure(READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
@@ -77,15 +74,15 @@ public class JSONUtils {
     }
 
     public static ArrayNode createArrayNode() {
-        return objectMapper.createArrayNode();
+        return OBJECT_MAPPER.createArrayNode();
     }
 
     public static ObjectNode createObjectNode() {
-        return objectMapper.createObjectNode();
+        return OBJECT_MAPPER.createObjectNode();
     }
 
     public static JsonNode toJsonNode(Object obj) {
-        return objectMapper.valueToTree(obj);
+        return OBJECT_MAPPER.valueToTree(obj);
     }
 
     /**
@@ -97,7 +94,7 @@ public class JSONUtils {
      */
     public static String toJsonString(Object object, SerializationFeature feature) {
         try {
-            ObjectWriter writer = objectMapper.writer(feature);
+            ObjectWriter writer = OBJECT_MAPPER.writer(feature);
             return writer.writeValueAsString(object);
         } catch (Exception e) {
             logger.error("object to json exception!", e);
@@ -126,7 +123,7 @@ public class JSONUtils {
         }
 
         try {
-            return objectMapper.readValue(json, clazz);
+            return OBJECT_MAPPER.readValue(json, clazz);
         } catch (Exception e) {
             logger.error("parse object exception!", e);
         }
@@ -135,7 +132,7 @@ public class JSONUtils {
 
     public static JsonNode parseNode(String json) {
         try {
-            return objectMapper.readTree(json);
+            return OBJECT_MAPPER.readTree(json);
         } catch (Exception e) {
             logger.error("parse object exception!", e);
         }
@@ -172,8 +169,8 @@ public class JSONUtils {
         }
 
         try {
-            CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, clazz);
-            return objectMapper.readValue(json, listType);
+            CollectionType listType = OBJECT_MAPPER.getTypeFactory().constructCollectionType(ArrayList.class, clazz);
+            return OBJECT_MAPPER.readValue(json, listType);
         } catch (Exception e) {
             logger.error("parse list exception!", e);
         }
@@ -194,7 +191,7 @@ public class JSONUtils {
         }
 
         try {
-            objectMapper.readTree(json);
+            OBJECT_MAPPER.readTree(json);
             return true;
         } catch (IOException e) {
             logger.error("check json object valid exception!", e);
@@ -263,7 +260,7 @@ public class JSONUtils {
         }
 
         try {
-            return objectMapper.readValue(json, new TypeReference<Map<K, V>>() {
+            return OBJECT_MAPPER.readValue(json, new TypeReference<Map<K, V>>() {
             });
         } catch (Exception e) {
             logger.error("json to map exception!", e);
@@ -286,7 +283,7 @@ public class JSONUtils {
         }
 
         try {
-            return objectMapper.readValue(json, type);
+            return OBJECT_MAPPER.readValue(json, type);
         } catch (Exception e) {
             logger.error("json to map exception!", e);
         }
@@ -302,7 +299,7 @@ public class JSONUtils {
      */
     public static String toJsonString(Object object) {
         try {
-            return objectMapper.writeValueAsString(object);
+            return OBJECT_MAPPER.writeValueAsString(object);
         } catch (Exception e) {
             throw new RuntimeException("Object json deserialization exception.", e);
         }
@@ -334,7 +331,7 @@ public class JSONUtils {
             if (text.isEmpty()) {
                 return parseObject(text, ObjectNode.class);
             } else {
-                return (ObjectNode) objectMapper.readTree(text);
+                return (ObjectNode) OBJECT_MAPPER.readTree(text);
             }
         } catch (Exception e) {
             throw new RuntimeException("String json deserialization exception.", e);
@@ -343,7 +340,7 @@ public class JSONUtils {
 
     public static ArrayNode parseArray(String text) {
         try {
-            return (ArrayNode) objectMapper.readTree(text);
+            return (ArrayNode) OBJECT_MAPPER.readTree(text);
         } catch (Exception e) {
             throw new RuntimeException("Json deserialization exception.", e);
         }
