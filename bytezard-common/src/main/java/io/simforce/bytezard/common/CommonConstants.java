@@ -4,6 +4,10 @@ package io.simforce.bytezard.common;
 public class CommonConstants {
 
     /**
+     * QUESTION ?
+     */
+    public static final String QUESTION = "?";
+    /**
      * comma ,
      */
     public static final String COMMA = ",";

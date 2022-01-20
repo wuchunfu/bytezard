@@ -17,7 +17,7 @@ public class Job implements Serializable {
     private String executePlatformType;
 
     /**
-     * String -> JobParameter
+     * {@link io.simforce.bytezard.common.entity.JobParameter}
      */
     private String parameter;
 

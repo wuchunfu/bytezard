@@ -9,10 +9,6 @@ import org.slf4j.LoggerFactory;
 import io.simforce.bytezard.common.exception.ConfigurationException;
 import io.simforce.bytezard.common.utils.ConfigUtils;
 
-/**
- * DirectoryServer 的配置和管理类
- * @author zixi0825
- */
 public class CoordinatorConfiguration {
 
     private static final Logger LOGGER =

@@ -182,7 +182,7 @@ public class DruidDataSourceProvider implements Provider<DataSource> {
                 ",username='" + dataSource.getUsername() +
                 '}';
     }
- 
+
     @Override
     public DataSource get() {
         logger.info("dataSource config ---> " + toString());

@@ -12,11 +12,13 @@ public class Project implements Serializable {
 
     private String description;
 
-    private Integer createUserId;
-
     private String version;
 
+    private Long createBy;
+
     private LocalDateTime createTime;
+
+    private Long updateBy;
 
     private LocalDateTime updateTime;
 
@@ -44,14 +46,6 @@ public class Project implements Serializable {
         this.description = description;
     }
 
-    public Integer getCreateUserId() {
-        return createUserId;
-    }
-
-    public void setCreateUserId(Integer createUserId) {
-        this.createUserId = createUserId;
-    }
-
     public String getVersion() {
         return version;
     }
@@ -60,12 +54,28 @@ public class Project implements Serializable {
         this.version = version;
     }
 
+    public Long getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(Long createBy) {
+        this.createBy = createBy;
+    }
+
     public LocalDateTime getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public Long getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(Long updateBy) {
+        this.updateBy = updateBy;
     }
 
     public LocalDateTime getUpdateTime() {

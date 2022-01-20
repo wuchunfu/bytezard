@@ -2,11 +2,13 @@ package io.simforce.bytezard.coordinator.utils;
 
 import io.simforce.bytezard.common.config.BytezardConfiguration;
 import io.simforce.bytezard.common.config.EnvConfig;
+import io.simforce.bytezard.common.config.SinkConfig;
 import io.simforce.bytezard.common.config.SourceConfig;
 import io.simforce.bytezard.common.entity.JobParameter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class JobParameterParser {
 
@@ -24,7 +26,9 @@ public class JobParameterParser {
             sourceConfigs.add(sourceConfig);
         });
 
-
+        Properties dataSourceProperties = PropertyUtils.getProperties();
+        SinkConfig actualValueSinkConfig = new SinkConfig();
+        JdbcInfo jdbcInfo = JdbcUrlParser.getJdbcInfo(dataSourceProperties.getProperty("jdbc.url"));
         //get the actual value storage parameter
 
         //get the error data storage parameter

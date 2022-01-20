@@ -32,6 +32,7 @@ import io.simforce.bytezard.coordinator.server.recovery.elector.ZooKeeperLeaderE
 import io.simforce.bytezard.coordinator.server.recovery.factory.RecoveryModeFactory;
 import io.simforce.bytezard.coordinator.server.recovery.factory.RecoveryModeFactoryManager;
 import io.simforce.bytezard.coordinator.server.runner.JobScheduler;
+import io.simforce.bytezard.coordinator.utils.PropertyUtils;
 import io.simforce.bytezard.remote.BytezardRemoteServer;
 import io.simforce.bytezard.remote.command.CommandCode;
 import io.simforce.bytezard.remote.config.NettyServerConfig;
@@ -132,6 +133,8 @@ public class CoordinatorServer {
         //start api server
         apiServer = new ApiServer(configuration);
         apiServer.start();
+
+        System.out.println(PropertyUtils.getProperties());
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override

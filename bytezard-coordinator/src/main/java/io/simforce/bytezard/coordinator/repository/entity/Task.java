@@ -21,7 +21,7 @@ public class Task implements Serializable {
     private String executePlatformType;
 
     /**
-     * String -> {@link io.simforce.bytezard.common.entity.JobParameter}
+     * {@link io.simforce.bytezard.common.entity.JobParameter}
      */
     private String parameter;
 

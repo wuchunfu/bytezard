@@ -44,10 +44,10 @@ public class BaseEnumTypeHandler extends BaseTypeHandler<BaseEnum> {
         return convert(cs.getInt(columnIndex));
     }
 
-    private BaseEnum convert(int status){
+    private BaseEnum convert(int code){
         BaseEnum[] enums = type.getEnumConstants();
         for(BaseEnum em: enums){
-            if(em.getCode() == status){
+            if(em.getCode() == code){
                 return  em;
             }
         }
