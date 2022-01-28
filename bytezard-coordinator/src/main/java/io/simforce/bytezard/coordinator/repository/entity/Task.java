@@ -3,60 +3,89 @@ package io.simforce.bytezard.coordinator.repository.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+@TableName("bytezard_task")
 public class Task implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
+    @TableId(type= IdType.ASSIGN_ID)
     private Long id;
 
+    @TableField(value = "name")
     private String name;
 
+    @TableField(value = "job_id")
     private Long jobId;
 
+    @TableField(value = "project_id")
     private Long projectId;
 
     /**
      * local/yarn/k8s
      */
+    @TableField(value = "execute_platform_type")
     private String executePlatformType;
 
     /**
      * {@link io.simforce.bytezard.common.entity.JobParameter}
      */
+    @TableField(value = "parameter")
     private String parameter;
 
+    @TableField(value = "status")
     private Integer status;
 
+    @TableField(value = "retry_times")
     private Integer retryTimes;
 
+    @TableField(value = "retry_interval")
     private Integer retryInterval;
 
+    @TableField(value = "timeout")
     private Integer timeout;
 
+    @TableField(value = "timeout_strategy")
     private Integer timeoutStrategy;
 
+    @TableField(value = "tenant_code")
     private String tenantCode;
 
+    @TableField(value = "resources")
     private String resources;
 
+    @TableField(value = "execute_host")
     private String executeHost;
 
+    @TableField(value = "application_id")
     private String applicationId;
 
+    @TableField(value = "process_id")
     private String processId;
 
+    @TableField(value = "execute_file_path")
     private String executeFilePath;
 
+    @TableField(value = "log_path")
     private String logPath;
 
+    @TableField(value = "submit_time")
     private LocalDateTime submitTime;
 
+    @TableField(value = "start_time")
     private LocalDateTime startTime;
 
+    @TableField(value = "end_time")
     private LocalDateTime endTime;
 
+    @TableField(value = "create_time")
     private LocalDateTime createTime;
 
+    @TableField(value = "update_time")
     private LocalDateTime updateTime;
 
     public Long getId() {

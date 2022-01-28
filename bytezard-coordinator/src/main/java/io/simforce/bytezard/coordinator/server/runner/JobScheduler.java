@@ -9,9 +9,9 @@ import io.simforce.bytezard.common.utils.Stopper;
 import io.simforce.bytezard.common.utils.ThreadUtils;
 import io.simforce.bytezard.coordinator.repository.entity.Command;
 import io.simforce.bytezard.coordinator.repository.entity.Task;
-import io.simforce.bytezard.coordinator.repository.module.BytezardCoordinatorInjector;
 import io.simforce.bytezard.coordinator.repository.service.impl.JobExternalService;
 import io.simforce.bytezard.coordinator.server.cache.JobExecuteManager;
+import io.simforce.bytezard.coordinator.utils.SpringApplicationContext;
 
 public class JobScheduler extends Thread {
 
@@ -22,9 +22,7 @@ public class JobScheduler extends Thread {
     private final JobExecuteManager jobExecuteManager;
 
     public JobScheduler(JobExecuteManager jobExecuteManager){
-        this.jobExternalService = BytezardCoordinatorInjector
-                .getInjector()
-                .getInstance(JobExternalService.class);
+        this.jobExternalService = SpringApplicationContext.getBean(JobExternalService.class);
         this.jobExecuteManager = jobExecuteManager;
     }
 
@@ -34,7 +32,6 @@ public class JobScheduler extends Thread {
         while (Stopper.isRunning()) {
             try {
                 Command command = jobExternalService.getCommand();
-                logger.info(JSONUtils.toJsonString(command));
                 if(command != null){
                     Task task = jobExternalService.executeCommand(logger,100-1,command);
 

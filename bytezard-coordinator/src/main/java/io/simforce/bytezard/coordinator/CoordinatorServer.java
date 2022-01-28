@@ -2,16 +2,20 @@ package io.simforce.bytezard.coordinator;
 
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 import io.simforce.bytezard.common.elector.LeaderElectionAgent;
-import io.simforce.bytezard.common.exception.ConfigurationException;
 import io.simforce.bytezard.common.utils.Stopper;
 import io.simforce.bytezard.common.utils.ThreadUtils;
 import io.simforce.bytezard.common.zookeeper.ZooKeeperClient;
 import io.simforce.bytezard.common.zookeeper.ZooKeeperConfig;
-import io.simforce.bytezard.coordinator.api.ApiServer;
 import io.simforce.bytezard.coordinator.server.cache.JobExecuteManager;
 import io.simforce.bytezard.coordinator.config.CoordinatorConfiguration;
 import io.simforce.bytezard.coordinator.server.listener.RemoveCacheChannelListener;
@@ -29,87 +33,51 @@ import io.simforce.bytezard.coordinator.server.processor.ViewWholeLogProcessor;
 import io.simforce.bytezard.coordinator.server.recovery.MetaDataRecover;
 import io.simforce.bytezard.coordinator.server.recovery.elector.CoordinatorLeaderElector;
 import io.simforce.bytezard.coordinator.server.recovery.elector.ZooKeeperLeaderElectionAgent;
-import io.simforce.bytezard.coordinator.server.recovery.factory.RecoveryModeFactory;
-import io.simforce.bytezard.coordinator.server.recovery.factory.RecoveryModeFactoryManager;
 import io.simforce.bytezard.coordinator.server.runner.JobScheduler;
-import io.simforce.bytezard.coordinator.utils.PropertyUtils;
+import io.simforce.bytezard.coordinator.utils.SpringApplicationContext;
 import io.simforce.bytezard.remote.BytezardRemoteServer;
 import io.simforce.bytezard.remote.command.CommandCode;
 import io.simforce.bytezard.remote.config.NettyServerConfig;
 
+@SpringBootApplication
+//@ComponentScan("io.simforce.bytezard.coordinator")
 public class CoordinatorServer {
 
     private static final Logger logger = LoggerFactory.getLogger(CoordinatorServer.class);
 
-    private BytezardRemoteServer bytezardRemoteServer;
+    @Autowired
+    private SpringApplicationContext springApplicationContext;
 
-    private final CoordinatorConfiguration configuration;
+    @Autowired
+    private CoordinatorConfiguration configuration;
+
+    private BytezardRemoteServer bytezardRemoteServer;
 
     private MetaDataRecover metaDataRecover;
 
-    private ApiServer apiServer;
-
     private JobExecuteManager jobExecuteManager;
 
-    private CoordinatorServer(CoordinatorConfiguration configuration){
-        this.configuration = configuration;
+    public static void main(String[] args) {
+        Thread.currentThread().setName(CoordinatorConstants.THREAD_NAME_COORDINATOR_SERVER);
+        SpringApplication.run(CoordinatorServer.class);
     }
 
-    public static void main(String[] args){
-
-        try{
-            //读取配置文件，构造Configuration
-            logger.info("starting coordinator server");
-            if(args.length == 0){
-                throw new ConfigurationException("configuration file path cannot be empty");
-            }
-
-            String configPath = args[0];
-            if(StringUtils.isEmpty(configPath)){
-                throw new ConfigurationException("configuration file path cannot be empty");
-            }
-
-            CoordinatorConfiguration configuration = CoordinatorConfiguration.getInstance();
-            configuration.parse(configPath);
-
-            CoordinatorServer coordinatorServer = new CoordinatorServer(configuration);
-            coordinatorServer.initializeAndStart();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    @PostConstruct
     private void initializeAndStart() throws Exception {
         logger.info("coordinator server start");
 
-        ZooKeeperClient.getInstance().buildClient(
-                new ZooKeeperConfig(this.configuration.getString(
-                        CoordinatorConfiguration.ZOOKEEPER_QUORUM,
-                        CoordinatorConfiguration.ZOOKEEPER_QUORUM_DEFAULT)));
+        ZooKeeperClient.getInstance().buildClient(new ZooKeeperConfig(this.configuration.getZookeeperQuorum()));
 
-        RecoveryModeFactoryManager recoveryModeFactoryManager = new RecoveryModeFactoryManager();
+        jobExecuteManager = new JobExecuteManager(this.configuration);
 
-        RecoveryModeFactory recoveryModeFactory =
-                recoveryModeFactoryManager.getRecoveryModeFactory(
-                        this.configuration.getString(
-                                CoordinatorConfiguration.COORDINATOR_RECOVERY_MODE,
-                                CoordinatorConfiguration.COORDINATOR_RECOVERY_MODE_DEFAULT));
+        metaDataRecover = new MetaDataRecover(jobExecuteManager);
 
-        jobExecuteManager =
-                new JobExecuteManager(this.configuration,recoveryModeFactory.createPersistenceEngine());
+        startElectLeader(this.configuration);
 
-        metaDataRecover =
-                new MetaDataRecover(this.configuration,recoveryModeFactory.createPersistenceEngine(),jobExecuteManager);
-
-        startElectLeader();
-
-        LogService logService = new LogService(jobExecuteManager,recoveryModeFactory.createPersistenceEngine());
+        LogService logService = new LogService(jobExecuteManager);
 
         NettyServerConfig serverConfig = new NettyServerConfig();
-        serverConfig.setListenPort(this.configuration.getInt(
-                CoordinatorConfiguration.COORDINATOR_LISTEN_PORT,
-                CoordinatorConfiguration.COORDINATOR_LISTEN_PORT_DEFAULT));
+        serverConfig.setListenPort(this.configuration.getListenPort());
         this.bytezardRemoteServer = new BytezardRemoteServer(serverConfig);
         this.bytezardRemoteServer.registerProcessor(CommandCode.JOB_EXECUTE_RESPONSE,new JobExecuteResponseProcessor(jobExecuteManager));
         this.bytezardRemoteServer.registerProcessor(CommandCode.JOB_KILL_RESPONSE,new JobKillResponseProcessor(jobExecuteManager));
@@ -130,12 +98,6 @@ public class CoordinatorServer {
         JobScheduler jobScheduler = new JobScheduler(jobExecuteManager);
         jobScheduler.start();
 
-        //start api server
-        apiServer = new ApiServer(configuration);
-        apiServer.start();
-
-        System.out.println(PropertyUtils.getProperties());
-
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
@@ -144,9 +106,9 @@ public class CoordinatorServer {
         }));
     }
 
-    private void startElectLeader() {
+    private void startElectLeader(CoordinatorConfiguration configuration) {
         CoordinatorLeaderElector coordinatorLeaderElector = new CoordinatorLeaderElector(configuration,metaDataRecover);
-        LeaderElectionAgent leaderElectionAgent = new ZooKeeperLeaderElectionAgent();
+        LeaderElectionAgent leaderElectionAgent = new ZooKeeperLeaderElectionAgent(configuration);
         leaderElectionAgent.setLeaderElector(coordinatorLeaderElector);
         leaderElectionAgent.start();
         coordinatorLeaderElector.await();
@@ -174,8 +136,6 @@ public class CoordinatorServer {
             this.bytezardRemoteServer.close();
 
             this.metaDataRecover.close();
-
-            this.apiServer.stop();
 
             this.jobExecuteManager.close();
 

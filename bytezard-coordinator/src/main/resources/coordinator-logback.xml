@@ -56,7 +56,7 @@
 
     <appender name="COORDINATOR_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.base}/MANGER-coordinator.log</file>
-        <filter class="io.simforce.bytezard.common.log.CoordinatorrLogFilter">
+        <filter class="io.simforce.bytezard.common.log.CoordinatorLogFilter">
             <level>INFO</level>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">

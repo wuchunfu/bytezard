@@ -25,7 +25,6 @@ import io.simforce.bytezard.common.utils.ThreadUtils;
 import io.simforce.bytezard.coordinator.repository.entity.Task;
 import io.simforce.bytezard.common.enums.ExecutionStatus;
 import io.simforce.bytezard.coordinator.exception.ExecuteJobException;
-import io.simforce.bytezard.coordinator.repository.module.BytezardCoordinatorInjector;
 import io.simforce.bytezard.coordinator.server.channel.ClientChannel;
 import io.simforce.bytezard.coordinator.server.channel.ClientChannelManager;
 import io.simforce.bytezard.coordinator.config.CoordinatorConfiguration;
@@ -34,8 +33,8 @@ import io.simforce.bytezard.coordinator.server.dispatch.ExecuteResult;
 import io.simforce.bytezard.coordinator.server.dispatch.IJobDispatcher;
 import io.simforce.bytezard.coordinator.server.dispatch.JobDispatcherImpl;
 import io.simforce.bytezard.coordinator.server.processor.JobResponseContext;
-import io.simforce.bytezard.coordinator.server.recovery.PersistenceEngine;
 import io.simforce.bytezard.coordinator.repository.service.impl.JobExternalService;
+import io.simforce.bytezard.coordinator.utils.SpringApplicationContext;
 import io.simforce.bytezard.remote.command.CommandCode;
 import io.simforce.bytezard.remote.command.JobExecuteRequestCommand;
 import io.simforce.bytezard.remote.command.JobExecuteResponseCommand;
@@ -63,8 +62,6 @@ public class JobExecuteManager {
 
     private final ExecutorService executorService;
 
-    private final PersistenceEngine persistenceEngine;
-
     private final ClientChannelManager clientChannelManager;
 
     private final JobExternalService jobExternalService;
@@ -72,10 +69,7 @@ public class JobExecuteManager {
     private final HashedWheelTimer wheelTimer =
             new HashedWheelTimer(new NamedThreadFactory("Job-Execute-Timeout"),1,TimeUnit.SECONDS);
 
-    public JobExecuteManager(CoordinatorConfiguration configuration,
-                             PersistenceEngine persistenceEngine){
-
-        this.persistenceEngine = persistenceEngine;
+    public JobExecuteManager(CoordinatorConfiguration configuration){
 
         executorService = Executors.newFixedThreadPool(5,new NamedThreadFactory("Coordinator-Job-Manager"));
 
@@ -83,9 +77,7 @@ public class JobExecuteManager {
 
         clientChannelManager = ClientChannelManager.getInstance();
 
-        jobExternalService = BytezardCoordinatorInjector
-                .getInjector()
-                .getInstance(JobExternalService.class);
+        jobExternalService = SpringApplicationContext.getBean(JobExternalService.class);
     }
 
     public void start(){
@@ -136,10 +128,6 @@ public class JobExecuteManager {
                 unFinishedJobMap.put(taskRequest.getTaskId(), taskRequest);
             }
         }
-    }
-
-    public PersistenceEngine getPersistenceEngine() {
-        return persistenceEngine;
     }
 
     public TaskRequest getExecutionJob(Long taskId){

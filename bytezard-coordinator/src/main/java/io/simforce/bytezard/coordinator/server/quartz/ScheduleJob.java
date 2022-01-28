@@ -39,8 +39,8 @@ import io.simforce.bytezard.coordinator.repository.entity.Job;
 import io.simforce.bytezard.coordinator.repository.entity.Task;
 import io.simforce.bytezard.coordinator.eunms.CommandType;
 import io.simforce.bytezard.common.enums.ExecutionStatus;
-import io.simforce.bytezard.coordinator.repository.module.BytezardCoordinatorInjector;
 import io.simforce.bytezard.coordinator.repository.service.impl.JobExternalService;
+import io.simforce.bytezard.coordinator.utils.SpringApplicationContext;
 
 /**
  * process schedule job
@@ -53,7 +53,7 @@ public class ScheduleJob implements org.quartz.Job {
     private static final Logger logger = LoggerFactory.getLogger(ScheduleJob.class);
 
     public JobExternalService getJobExternalService(){
-        return BytezardCoordinatorInjector.getInjector().getInstance(JobExternalService.class);
+        return SpringApplicationContext.getBean(JobExternalService.class);
     }
 
     /**
@@ -92,10 +92,10 @@ public class ScheduleJob implements org.quartz.Job {
         String jobName = QuartzExecutors.buildJobName(scheduleId);
         String jobGroupName = QuartzExecutors.buildJobGroupName(projectId);
 
-        if(!QuartzExecutors.getInstance().deleteJob(jobName, jobGroupName)){
-            logger.warn("set offline failure:projectId:{},scheduleId:{}",projectId,scheduleId);
-            throw new RuntimeException("set offline failure");
-        }
+//        if(!QuartzExecutors.getInstance().deleteJob(jobName, jobGroupName)){
+//            logger.warn("set offline failure:projectId:{},scheduleId:{}",projectId,scheduleId);
+//            throw new RuntimeException("set offline failure");
+//        }
     }
 
     private Task createTask(Job job, LocalDateTime scheduleTime){

@@ -1,69 +1,81 @@
 package io.simforce.bytezard.coordinator.repository.service.impl;
 
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import io.simforce.bytezard.coordinator.api.dto.project.ProjectCreate;
+import io.simforce.bytezard.coordinator.api.dto.project.ProjectUpdate;
+import io.simforce.bytezard.coordinator.api.enums.BytezardApiException;
+import io.simforce.bytezard.coordinator.api.enums.Status;
 import io.simforce.bytezard.coordinator.repository.entity.Project;
 import io.simforce.bytezard.coordinator.repository.mapper.ProjectMapper;
 import io.simforce.bytezard.coordinator.repository.service.ProjectService;
 
-import com.github.pagehelper.ISelect;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-@Singleton
-public class ProjectServiceImpl implements ProjectService {
-
-    @Inject
-    private ProjectMapper projectMapper;
+@Service("projectService")
+public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> implements ProjectService {
 
     @Override
-    public PageInfo<Project> page(Map<String, Object> params) {
-
-        Integer page = (Integer)params.remove("page");
-        Integer limit = (Integer)params.remove("limit");
-
-        if(page == null || page < 0){
-            page = 0;
-        }
-
-        if(limit == null || limit < 0){
-            limit = 10;
-        }
-
-        return PageHelper.startPage(page, limit).doSelectPageInfo(new ISelect() {
-            @Override
-            public void doSelect() {
-               list();
-            }
-        });
+    public IPage<Project> page(String keywords, Long userId, Integer pageNumber, Integer pageSize) {
+        Page<Project> page = new Page<>(pageNumber, pageSize);
+        return baseMapper.getProjectsByUserWithSearchVal(page, keywords, userId);
     }
 
     @Override
     public List<Project> list() {
-        return projectMapper.list();
+        return baseMapper.list();
     }
 
     @Override
     public Project getById(Long id) {
-        return projectMapper.getById(id);
+        return baseMapper.selectById(id);
     }
 
     @Override
-    public Long save(Project project) {
-        projectMapper.save(project);
-        return project.getId();
+    public Project createProject(ProjectCreate projectCreate) {
+        if (isExist(projectCreate.getName())) {
+            throw new BytezardApiException(Status.PROJECT_IS_EXIST_ERROR, projectCreate.getName());
+        }
+
+        Project project = new Project();
+        BeanUtils.copyProperties(projectCreate, project);
+
+        if (baseMapper.insert(project) < 1) {
+            throw new BytezardApiException(Status.PROJECT_CREATE_ERROR, project.getName());
+        }
+        return project;
     }
 
     @Override
     public int deleteById(Long id) {
-        return projectMapper.deleteById(id);
+        return baseMapper.deleteById(id);
     }
 
     @Override
-    public int updateById(Project project) {
-        return projectMapper.updateById(project);
+    public Project updateProject(ProjectUpdate projectUpdate) {
+        Project project = baseMapper.selectById(projectUpdate.getId());
+        if (project != null) {
+            //
+        } else {
+            throw new BytezardApiException(Status.PROJECT_IS_NOT_EXIST_ERROR, projectUpdate.getName());
+        }
+
+        BeanUtils.copyProperties(projectUpdate, project);
+
+        if (baseMapper.updateById(project) < 1) {
+            throw new BytezardApiException(Status.PROJECT_UPDATE_ERROR, project.getName());
+        }
+
+        return project;
+    }
+
+    public boolean isExist(String search) {
+        return baseMapper.selectOne(new QueryWrapper<Project>().eq("name", search)) != null;
     }
 }

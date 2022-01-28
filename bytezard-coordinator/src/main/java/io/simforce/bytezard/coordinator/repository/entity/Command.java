@@ -3,32 +3,49 @@ package io.simforce.bytezard.coordinator.repository.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import io.simforce.bytezard.coordinator.eunms.CommandType;
 
+@TableName("bytezard_command")
 public class Command implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
+    @TableId(type= IdType.ASSIGN_ID)
     private Long id;
 
+    @TableField(value = "type")
     private CommandType type;
 
+    @TableField(value = "parameter")
     private String parameter;
 
+    @TableField(value = "project_id")
     private Long projectId;
 
+    @TableField(value = "job_id")
     private Long jobId;
 
+    @TableField(value = "priority")
     private Integer priority;
 
+    @TableField(value = "schedule_time")
     private LocalDateTime scheduleTime;
 
+    @TableField(value = "submit_time")
     private LocalDateTime submitTime;
 
+    @TableField(value = "start_time")
     private LocalDateTime startTime;
 
+    @TableField(value = "create_time")
     private LocalDateTime createTime;
 
+    @TableField(value = "update_time")
     private LocalDateTime updateTime;
 
     public Long getId() {

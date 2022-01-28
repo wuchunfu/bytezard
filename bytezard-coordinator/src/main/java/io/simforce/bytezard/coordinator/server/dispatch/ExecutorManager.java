@@ -18,11 +18,7 @@ public class ExecutorManager {
     public ExecutorManager(CoordinatorConfiguration configuration){
         try{
             executorSelectStrategy = ExecutorSelectStrategyFactory
-                    .getExecutorStrategy(StrategyType.of(
-                            configuration.getString(
-                                    CoordinatorConfiguration.COORDINATOR_HOST_SELECT_STRATEGY,
-                                    CoordinatorConfiguration.COORDINATOR_HOST_SELECT_STRATEGY_DEFAULT)
-                    ));
+                    .getExecutorStrategy(StrategyType.of(configuration.getHostSelectStrategy()));
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -68,12 +68,8 @@ public class CoordinatorLeaderElector implements LeaderElectable {
             if (activeNodeInfo == null) {
                 activeNodeInfo =
                     new ActiveNodeInfo(OSUtils.getHost(),
-                            this.configuration.getInt(
-                                    CoordinatorConfiguration.COORDINATOR_LISTEN_PORT,
-                                    CoordinatorConfiguration.COORDINATOR_LISTEN_PORT_DEFAULT),
-                            this.configuration.getInt(
-                                    CoordinatorConfiguration.COORDINATOR_SERVLET_PORT,
-                                    CoordinatorConfiguration.COORDINATOR_SERVLET_PORT_DEFAULT));
+                            this.configuration.getListenPort(),
+                            this.configuration.getServletPort());
             }
             zooKeeperClient.
                     persistEphemeral(CoreConfig.COORDINATOR_ACTIVE_DIR, JSONUtils.toJsonString(activeNodeInfo));
@@ -84,12 +80,8 @@ public class CoordinatorLeaderElector implements LeaderElectable {
             if(activeNodeInfo == null){
                 activeNodeInfo =
                     new ActiveNodeInfo(OSUtils.getHost(),
-                            this.configuration.getInt(
-                                    CoordinatorConfiguration.COORDINATOR_LISTEN_PORT,
-                                    CoordinatorConfiguration.COORDINATOR_LISTEN_PORT_DEFAULT),
-                            this.configuration.getInt(
-                                    CoordinatorConfiguration.COORDINATOR_SERVLET_PORT,
-                                    CoordinatorConfiguration.COORDINATOR_SERVLET_PORT_DEFAULT));
+                            this.configuration.getListenPort(),
+                            this.configuration.getServletPort());
             }
             zooKeeperClient.remove(CoreConfig.COORDINATOR_ACTIVE_DIR);
             status = LeadershipStatus.NOT_LEADER;

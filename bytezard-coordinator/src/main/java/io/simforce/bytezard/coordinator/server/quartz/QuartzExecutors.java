@@ -21,50 +21,16 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import static io.simforce.bytezard.coordinator.CoordinatorConstants.*;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_POSTGRESQL_DRIVER;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_DATASOURCE_MYDS_CONNECTIONPROVIDER_CLASS;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_JOBSTORE_ACQUIRETRIGGERSWITHINLOCK;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_JOBSTORE_CLASS;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_JOBSTORE_CLUSTERCHECKININTERVAL;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_JOBSTORE_DATASOURCE;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_JOBSTORE_DRIVERDELEGATECLASS;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_JOBSTORE_ISCLUSTERED;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_JOBSTORE_MISFIRETHRESHOLD;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_JOBSTORE_TABLEPREFIX;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_JOBSTORE_USEPROPERTIES;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_SCHEDULER_INSTANCEID;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_SCHEDULER_INSTANCENAME;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_SCHEDULER_MAKESCHEDULERTHREADDAEMON;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_THREADPOOL_CLASS;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_THREADPOOL_MAKETHREADSDAEMONS;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_THREADPOOL_THREADCOUNT;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.ORG_QUARTZ_THREADPOOL_THREADPRIORITY;
 import static io.simforce.bytezard.coordinator.CoordinatorConstants.PROJECT_ID;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.QUARTZ_ACQUIRETRIGGERSWITHINLOCK;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.QUARTZ_CLUSTERCHECKININTERVAL;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.QUARTZ_DATASOURCE;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.QUARTZ_INSTANCEID;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.QUARTZ_INSTANCENAME;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.QUARTZ_MISFIRETHRESHOLD;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.QUARTZ_PROPERTIES_PATH;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.QUARTZ_TABLE_PREFIX;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.QUARTZ_THREADCOUNT;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.QUARTZ_THREADPRIORITY;
 import static io.simforce.bytezard.coordinator.CoordinatorConstants.SCHEDULE_ID;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.STRING_FALSE;
-import static io.simforce.bytezard.coordinator.CoordinatorConstants.STRING_TRUE;
 import static io.simforce.bytezard.coordinator.CoordinatorConstants.UNDERLINE;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -75,20 +41,11 @@ import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.TriggerKey;
-import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.impl.jdbcjobstore.JobStoreTX;
-import org.quartz.impl.jdbcjobstore.PostgreSQLDelegate;
-import org.quartz.impl.jdbcjobstore.StdJDBCDelegate;
 import org.quartz.impl.matchers.GroupMatcher;
-import org.quartz.simpl.SimpleThreadPool;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.druid.support.hibernate.DruidConnectionProvider;
 import com.google.common.collect.Maps;
-
-import io.simforce.bytezard.coordinator.utils.PropertyUtils;
 
 
 /**
@@ -96,128 +53,19 @@ import io.simforce.bytezard.coordinator.utils.PropertyUtils;
  */
 public class QuartzExecutors {
 
-  /**
-   * logger of QuartzExecutors
-   */
   private static final Logger logger = LoggerFactory.getLogger(QuartzExecutors.class);
 
-  /**
-   * read write lock
-   */
   private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-  /**
-   * A Scheduler maintains a registry of org.quartz.JobDetail and Trigger.
-   */
-  private static Scheduler scheduler;
-
-  /**
-   * instance of QuartzExecutors
-   */
-  private static volatile QuartzExecutors INSTANCE = null;
-
-  /**
-   * load conf
-   */
-  private static Configuration conf;
-
+  private static final class Holder {
+    private static final QuartzExecutors INSTANCE = new QuartzExecutors();
+  }
 
   private QuartzExecutors() {
-    try {
-      conf = new PropertiesConfiguration(QUARTZ_PROPERTIES_PATH);
-    }catch (ConfigurationException e){
-      logger.warn("not loaded quartz configuration file, will used default value",e);
-    }
-    this.init();
   }
 
-  /**
-   * thread safe and performance promote
-   * @return instance of Quartz Executors
-   */
   public static QuartzExecutors getInstance() {
-    if (INSTANCE == null) {
-      synchronized (QuartzExecutors.class) {
-        if (INSTANCE == null) {
-          INSTANCE = new QuartzExecutors();
-        }
-      }
-    }
-    return INSTANCE;
-  }
-
-
-  /**
-   * init
-   *
-   * Returns a client-usable handle to a Scheduler.
-   */
-  private void init() {
-    try {
-      StdSchedulerFactory schedulerFactory = new StdSchedulerFactory();
-      Properties properties = new Properties();
-
-      String dataSourceDriverClass = PropertyUtils.getString(DATASOURCE_DRIVER_CLASS_NAME);
-      if (dataSourceDriverClass.equals(ORG_POSTGRESQL_DRIVER)){
-        properties.setProperty(ORG_QUARTZ_JOBSTORE_DRIVERDELEGATECLASS,conf.getString(ORG_QUARTZ_JOBSTORE_DRIVERDELEGATECLASS, PostgreSQLDelegate.class.getName()));
-      } else {
-        properties.setProperty(ORG_QUARTZ_JOBSTORE_DRIVERDELEGATECLASS,conf.getString(ORG_QUARTZ_JOBSTORE_DRIVERDELEGATECLASS, StdJDBCDelegate.class.getName()));
-      }
-
-      properties.setProperty(ORG_QUARTZ_SCHEDULER_INSTANCENAME, conf.getString(ORG_QUARTZ_SCHEDULER_INSTANCENAME, QUARTZ_INSTANCENAME));
-      properties.setProperty(ORG_QUARTZ_SCHEDULER_INSTANCEID, conf.getString(ORG_QUARTZ_SCHEDULER_INSTANCEID, QUARTZ_INSTANCEID));
-      properties.setProperty(ORG_QUARTZ_SCHEDULER_MAKESCHEDULERTHREADDAEMON,conf.getString(ORG_QUARTZ_SCHEDULER_MAKESCHEDULERTHREADDAEMON,STRING_TRUE));
-      properties.setProperty(ORG_QUARTZ_JOBSTORE_USEPROPERTIES,conf.getString(ORG_QUARTZ_JOBSTORE_USEPROPERTIES,STRING_FALSE));
-      properties.setProperty(ORG_QUARTZ_THREADPOOL_CLASS,conf.getString(ORG_QUARTZ_THREADPOOL_CLASS, SimpleThreadPool.class.getName()));
-      properties.setProperty(ORG_QUARTZ_THREADPOOL_MAKETHREADSDAEMONS,conf.getString(ORG_QUARTZ_THREADPOOL_MAKETHREADSDAEMONS,STRING_TRUE));
-      properties.setProperty(ORG_QUARTZ_THREADPOOL_THREADCOUNT,conf.getString(ORG_QUARTZ_THREADPOOL_THREADCOUNT, QUARTZ_THREADCOUNT));
-      properties.setProperty(ORG_QUARTZ_THREADPOOL_THREADPRIORITY,conf.getString(ORG_QUARTZ_THREADPOOL_THREADPRIORITY, QUARTZ_THREADPRIORITY));
-      properties.setProperty(ORG_QUARTZ_JOBSTORE_CLASS,conf.getString(ORG_QUARTZ_JOBSTORE_CLASS, JobStoreTX.class.getName()));
-      properties.setProperty(ORG_QUARTZ_JOBSTORE_TABLEPREFIX,conf.getString(ORG_QUARTZ_JOBSTORE_TABLEPREFIX, QUARTZ_TABLE_PREFIX));
-      properties.setProperty(ORG_QUARTZ_JOBSTORE_ISCLUSTERED,conf.getString(ORG_QUARTZ_JOBSTORE_ISCLUSTERED,STRING_TRUE));
-      properties.setProperty(ORG_QUARTZ_JOBSTORE_MISFIRETHRESHOLD,conf.getString(ORG_QUARTZ_JOBSTORE_MISFIRETHRESHOLD, QUARTZ_MISFIRETHRESHOLD));
-      properties.setProperty(ORG_QUARTZ_JOBSTORE_CLUSTERCHECKININTERVAL,conf.getString(ORG_QUARTZ_JOBSTORE_CLUSTERCHECKININTERVAL, QUARTZ_CLUSTERCHECKININTERVAL));
-      properties.setProperty(ORG_QUARTZ_JOBSTORE_ACQUIRETRIGGERSWITHINLOCK,conf.getString(ORG_QUARTZ_JOBSTORE_ACQUIRETRIGGERSWITHINLOCK, QUARTZ_ACQUIRETRIGGERSWITHINLOCK));
-      properties.setProperty(ORG_QUARTZ_JOBSTORE_DATASOURCE,conf.getString(ORG_QUARTZ_JOBSTORE_DATASOURCE, QUARTZ_DATASOURCE));
-      properties.setProperty(ORG_QUARTZ_DATASOURCE_MYDS_CONNECTIONPROVIDER_CLASS,conf.getString(ORG_QUARTZ_DATASOURCE_MYDS_CONNECTIONPROVIDER_CLASS, DruidConnectionProvider.class.getName()));
-
-      schedulerFactory.initialize(properties);
-      scheduler = schedulerFactory.getScheduler();
-
-    } catch (SchedulerException e) {
-      logger.error(e.getMessage(),e);
-      System.exit(1);
-    }
-
-  }
-
-  /**
-   * Whether the scheduler has been started.
-   *
-   * @throws SchedulerException scheduler exception
-   */
-  public void start() throws SchedulerException {
-    if (!scheduler.isStarted()){
-      scheduler.start();
-      logger.info("Quartz service started" );
-    }
-  }
-
-  /**
-   * stop all scheduled tasks
-   *
-   * Halts the Scheduler's firing of Triggers,
-   * and cleans up all resources associated with the Scheduler.
-   *
-   * The scheduler cannot be re-started.
-   * @throws SchedulerException scheduler exception
-   */
-  public void shutdown() throws SchedulerException {
-    if (!scheduler.isShutdown()) {
-        // don't wait for the task to complete
-        scheduler.shutdown();
-        logger.info("Quartz service stopped, and halt all tasks");
-    }
+    return Holder.INSTANCE;
   }
 
 
@@ -232,7 +80,7 @@ public class QuartzExecutors {
    * @param cronExpression    cron expression
    * @param jobDataMap        job parameters data map
    */
-  public void addJob(Class<? extends Job> clazz,
+  public void addJob(Scheduler scheduler, Class<? extends Job> clazz,
                      String jobName,
                      String jobGroupName,
                      Date startDate,
@@ -309,7 +157,7 @@ public class QuartzExecutors {
    * @param jobGroupName job group name
    * @return true if the Job was found and deleted.
    */
-  public boolean deleteJob(String jobName, String jobGroupName) {
+  public boolean deleteJob(Scheduler scheduler,String jobName, String jobGroupName) {
     lock.writeLock().lock();
     try {
       JobKey jobKey = new JobKey(jobName,jobGroupName);
@@ -336,7 +184,7 @@ public class QuartzExecutors {
    * @return true if all of the Jobs were found and deleted, false if
    *      one or more were not deleted.
    */
-  public boolean deleteAllJobs(String jobGroupName) {
+  public boolean deleteAllJobs(Scheduler scheduler,String jobGroupName) {
     lock.writeLock().lock();
     try {
       logger.info("try to delete all jobs in job group: {}", jobGroupName);

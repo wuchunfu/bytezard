@@ -26,7 +26,10 @@ public class ZooKeeperLeaderElectionAgent extends LeaderElectionAgent implements
 
     private final ZooKeeperClient zooKeeperClient;
 
-    public ZooKeeperLeaderElectionAgent(){
+    private final CoordinatorConfiguration configuration;
+
+    public ZooKeeperLeaderElectionAgent(CoordinatorConfiguration configuration){
+        this.configuration = configuration;
         zooKeeperClient = ZooKeeperClient.getInstance();
     }
 
@@ -34,7 +37,7 @@ public class ZooKeeperLeaderElectionAgent extends LeaderElectionAgent implements
     public void start(){
         logger.info("Starting ZooKeeper LeaderElection agent");
         zookeeper = zooKeeperClient.getClient();
-        leaderLatch = new LeaderLatch(zookeeper, CoordinatorConfiguration.BYTEZARD_LEADER_ELECTION_DIR);
+        leaderLatch = new LeaderLatch(zookeeper, this.configuration.getLeaderElectionDir());
         leaderLatch.addListener(this);
         try {
             leaderLatch.start();

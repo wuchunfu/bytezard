@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.utils.JSONUtils;
@@ -14,23 +14,20 @@ import io.simforce.bytezard.coordinator.repository.entity.Command;
 import io.simforce.bytezard.coordinator.repository.entity.Job;
 import io.simforce.bytezard.coordinator.repository.entity.Task;
 import io.simforce.bytezard.coordinator.repository.service.CommandService;
-import io.simforce.bytezard.coordinator.repository.service.ExecutionJobService;
+
 import io.simforce.bytezard.coordinator.repository.service.TaskService;
 import io.simforce.bytezard.coordinator.repository.service.JobService;
 
-@Singleton
+@Component
 public class JobExternalService {
     
-    @Inject
+    @Autowired
     private TaskService taskService;
 
-    @Inject
+    @Autowired
     private CommandService commandService;
 
-    @Inject
-    private ExecutionJobService executionJobService;
-
-    @Inject
+    @Autowired
     private JobService jobService;
 
     public Job getJobById(Long id) {
@@ -42,7 +39,7 @@ public class JobExternalService {
     }
 
     public Task submitJob(Task task){
-        taskService.save(task);
+        taskService.insert(task);
         return task;
     }
 
@@ -58,20 +55,20 @@ public class JobExternalService {
         Map<String, String> commandParameter = JSONUtils.toMap(command.getParameter());
         Task task = taskService.getById(Long.parseLong(commandParameter.get("task_id")));
         task.setStartTime(LocalDateTime.now());
-        taskService.updateById(task);
+        taskService.update(task);
         return task;
     }
 
     public int updateTask(Task task){
-        return taskService.updateById(task);
+        return taskService.update(task);
     }
 
     public Long insertTask(Task task){
-        return taskService.save(task);
+        return taskService.insert(task);
     }
 
     public Long insertCommand(Command command){
-        return commandService.save(command);
+        return commandService.insert(command);
     }
 
     public void updateTaskStatus(Long taskId, int status){

@@ -4,13 +4,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import io.simforce.bytezard.common.entity.ActiveNodeInfo;
 import io.simforce.bytezard.remote.BytezardRemoteClient;
 import io.simforce.bytezard.remote.command.PingCommand;
 import io.simforce.bytezard.remote.command.RequestClientType;
 import io.simforce.bytezard.remote.utils.JsonSerializer;
 import io.simforce.bytezard.remote.utils.Host;
 import io.simforce.bytezard.remote.utils.NamedThreadFactory;
-import io.simforce.bytezard.common.entity.MasterInfo;
 import io.simforce.bytezard.common.registry.IRegistryCenter;
 import io.simforce.bytezard.common.registry.ZooKeeperRegistryCenter;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ public abstract class ServerReConnector {
     public void doConnect(final BytezardRemoteClient bytezardRemoteClient,
                           final Operator operator,
                           final RequestClientType clientType) {
-        if(isRunning) {
+        if (isRunning) {
             String masterNode = getActiveNode();
             if(null == masterNode || "".equals(masterNode)){
                 this.scheduledExecutorService.schedule(new Runnable() {
@@ -54,7 +54,7 @@ public abstract class ServerReConnector {
                     }
                 },10,TimeUnit.SECONDS);
             } else {
-                MasterInfo masterInfo = JsonSerializer.deserialize(masterNode,MasterInfo.class);
+                ActiveNodeInfo masterInfo = JsonSerializer.deserialize(masterNode,ActiveNodeInfo.class);
                 if(masterInfo != null) {
                     Host host = new Host(masterInfo.getIp(), masterInfo.getRpcPort());
                     Channel channel = bytezardRemoteClient.doConnect(host,true);

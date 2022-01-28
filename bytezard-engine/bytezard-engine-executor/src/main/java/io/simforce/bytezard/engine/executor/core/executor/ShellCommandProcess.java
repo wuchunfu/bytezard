@@ -31,12 +31,12 @@ public class ShellCommandProcess extends BaseCommandProcess {
 
     @Override
     protected String buildCommandFilePath() {
-        return String.format("%s/%s.command", taskRequest.getExecutePath(), taskRequest.getJobName());
+        return String.format("%s/%s.command", taskRequest.getExecuteFilePath(), taskRequest.getTaskName());
     }
 
     @Override
     protected void createCommandFileIfNotExists(String execCommand, String commandFile) throws IOException {
-        logger.info("tenant {},job dir:{}" , taskRequest.getTenantCode(), taskRequest.getExecutePath());
+        logger.info("tenant {},job dir:{}" , taskRequest.getTenantCode(), taskRequest.getExecuteFilePath());
 
         if(Files.exists(Paths.get(commandFile))){
             Files.delete(Paths.get(commandFile));
@@ -49,9 +49,9 @@ public class ShellCommandProcess extends BaseCommandProcess {
         sb.append("BASEDIR=$(cd `dirname $0`; pwd)\n");
         sb.append("cd $BASEDIR\n");
 
-        if (taskRequest.getEnvFile() != null) {
-            sb.append("source ").append(taskRequest.getEnvFile()).append("\n");
-        }
+//        if (taskRequest.getEnvFile() != null) {
+//            sb.append("source ").append(taskRequest.getEnvFile()).append("\n");
+//        }
 
         sb.append("\n\n");
         sb.append(execCommand);

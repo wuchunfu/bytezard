@@ -9,6 +9,9 @@ public class ActiveNodeInfo {
     private int rpcPort;
     private int httpPort;
 
+    public ActiveNodeInfo() {
+    }
+
     public ActiveNodeInfo(String ip, int rpcPort, int httpPort) {
         this.ip = ip;
         this.rpcPort = rpcPort;

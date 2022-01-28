@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -120,9 +121,9 @@ public abstract class BaseCommandProcess {
                     result.setExitStatusCode(YarnUtils.isSuccessOfYarnState(appIds) ? EXIT_CODE_SUCCESS : EXIT_CODE_FAILURE);
                 }
 
-                logger.info("process has exited, work dir:{}, pid:{} ,exitStatusCode:{}", taskRequest.getExecutePath(), pid,exitStatusCode);
+                logger.info("process has exited, work dir:{}, pid:{} ,exitStatusCode:{}", taskRequest.getExecuteFilePath(), pid,exitStatusCode);
             } else {
-                logger.warn("process timeout, work dir:{}, pid:{}", taskRequest.getExecutePath(), pid);
+                logger.warn("process timeout, work dir:{}, pid:{}", taskRequest.getExecuteFilePath(), pid);
             }
 
         } catch (InterruptedException e) {
@@ -146,7 +147,7 @@ public abstract class BaseCommandProcess {
         //init process builder
         ProcessBuilder processBuilder = new ProcessBuilder();
         // setting up a working directory
-        processBuilder.directory(new File(taskRequest.getExecutePath()));
+        processBuilder.directory(new File(taskRequest.getExecuteFilePath()));
         // merge error information to standard output stream
         processBuilder.redirectErrorStream(true);
         // setting up user to run commands
@@ -277,7 +278,7 @@ public abstract class BaseCommandProcess {
      * @return remain time
      */
     private long getRemainTime() {
-        long usedTime = (System.currentTimeMillis() - taskRequest.getStartTime().getTime()) / 1000;
+        long usedTime = (System.currentTimeMillis() - taskRequest.getStartTime().toInstant(ZoneOffset.of("+8")).toEpochMilli()) / 1000;
         long remainTime = taskRequest.getTimeout() - usedTime;
 
         if (remainTime < 0) {
@@ -330,7 +331,7 @@ public abstract class BaseCommandProcess {
                 // sudo -u user command to run command
                 String cmd = String.format("sudo kill %d", processId);
 
-                logger.info("soft kill job:{}, process id:{}, cmd:{}", taskRequest.getJobName(), processId, cmd);
+                logger.info("soft kill job:{}, process id:{}, cmd:{}", taskRequest.getTaskName(), processId, cmd);
 
                 Runtime.getRuntime().exec(cmd);
             } catch (IOException e) {
@@ -350,7 +351,7 @@ public abstract class BaseCommandProcess {
             try {
                 String cmd = String.format("sudo kill -9 %d", processId);
 
-                logger.info("hard kill job:{}, process id:{}, cmd:{}", taskRequest.getJobName(), processId, cmd);
+                logger.info("hard kill job:{}, process id:{}, cmd:{}", taskRequest.getTaskName(), processId, cmd);
 
                 Runtime.getRuntime().exec(cmd);
             } catch (IOException e) {
@@ -364,7 +365,7 @@ public abstract class BaseCommandProcess {
      * @param process process
      */
     private void parseProcessOutput(Process process) {
-        String threadLoggerInfoName = String.format(LoggerUtils.JOB_LOGGER_THREAD_NAME + "-%s", taskRequest.getJobName());
+        String threadLoggerInfoName = String.format(LoggerUtils.JOB_LOGGER_THREAD_NAME + "-%s", taskRequest.getTaskName());
         ExecutorService parseProcessOutputExecutorService = ThreadUtils.newDaemonSingleThreadExecutor(threadLoggerInfoName);
         parseProcessOutputExecutorService.submit(new Runnable(){
             @Override

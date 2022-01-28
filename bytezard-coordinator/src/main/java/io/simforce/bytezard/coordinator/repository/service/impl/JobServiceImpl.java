@@ -2,41 +2,40 @@ package io.simforce.bytezard.coordinator.repository.service.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
 import io.simforce.bytezard.coordinator.repository.entity.Job;
 import io.simforce.bytezard.coordinator.repository.mapper.JobMapper;
 import io.simforce.bytezard.coordinator.repository.service.JobService;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-@Singleton
-public class JobServiceImpl implements JobService {
-
-    @Inject
-    private JobMapper jobMapper;
+@Service("jobService")
+public class JobServiceImpl extends ServiceImpl<JobMapper,Job> implements JobService {
 
     @Override
-    public long save(Job job) {
-        return jobMapper.save(job);
+    public long insert(Job job) {
+        baseMapper.insert(job);
+        return job.getId();
     }
 
     @Override
-    public int updateById(Job job) {
-        return jobMapper.updateById(job);
+    public int update(Job job) {
+        return baseMapper.updateById(job);
     }
 
     @Override
     public Job getById(long id) {
-        return jobMapper.getById(id);
+        return baseMapper.selectById(id);
     }
 
     @Override
-    public List<Job> listByFlowDefinitionId(Long flowDefinitionId) {
-        return jobMapper.listByFlowDefinitionId(flowDefinitionId);
+    public List<Job> listByProjectId(Long projectId) {
+        return baseMapper.listByProjectId(projectId);
     }
 
     @Override
     public int deleteById(long id) {
-        return jobMapper.deleteById(id);
+        return baseMapper.deleteById(id);
     }
 }

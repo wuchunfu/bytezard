@@ -14,8 +14,11 @@
         <dependency>
             <groupId>io.simforce.bytezard</groupId>
             <artifactId>bytezard-engine-spark-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.simforce.bytezard</groupId>
+            <artifactId>bytezard-engine-spark-api</artifactId>
         </dependency>
     </dependencies>
 

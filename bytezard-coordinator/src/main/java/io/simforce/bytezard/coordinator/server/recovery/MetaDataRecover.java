@@ -23,23 +23,15 @@ public class MetaDataRecover {
 
     private final Logger logger = LoggerFactory.getLogger(MetaDataRecover.class);
 
-    private final CoordinatorConfiguration configuration;
-
     private final JobExecuteManager jobExecuteManager;
 
     private final ZooKeeperClient zooKeeperClient;
-
-    private final PersistenceEngine persistenceEngine;
 
     private volatile boolean isStop = false;
 
     private RecoveryState recoveryState = RecoveryState.RECOVERING;
 
-    public MetaDataRecover(CoordinatorConfiguration configuration,
-                           PersistenceEngine persistenceEngine,
-                           JobExecuteManager jobExecuteManager){
-        this.persistenceEngine = persistenceEngine;
-        this.configuration = configuration;
+    public MetaDataRecover(JobExecuteManager jobExecuteManager){
         this.jobExecuteManager = jobExecuteManager;
         this.zooKeeperClient = ZooKeeperClient.getInstance();
     }
@@ -50,15 +42,15 @@ public class MetaDataRecover {
         //处理缓存在zk中的response
         processCachedResponse();
 
-        List<TaskRequest> unStartedJob = persistenceEngine.getUnStartedJobs();
-        List<TaskRequest> unFinishedJob = persistenceEngine.getUnFinishedJobs();
+//        List<TaskRequest> unStartedJob = persistenceEngine.getUnStartedJobs();
+//        List<TaskRequest> unFinishedJob = persistenceEngine.getUnFinishedJobs();
 
 //        logger.info(JSONUtils.toJSONString(unStartedJob));
 //        logger.info(JSONUtils.toJSONString(unFinishedJob));
 
         //取出没有发送的任务填充到待发送队列
-        jobExecuteManager.putUnStartedJobs(unStartedJob);
-        jobExecuteManager.putUnFinishedJobs(unFinishedJob);
+//        jobExecuteManager.putUnStartedJobs(unStartedJob);
+//        jobExecuteManager.putUnFinishedJobs(unFinishedJob);
 
         //同时需要检查未完成任务的executor是否已经挂掉了，如果挂掉了需要
 
@@ -82,7 +74,7 @@ public class MetaDataRecover {
                             String commandStr = zooKeeperClient.get(CoreConfig.JOB_RESPONSE_CACHE_PATH+"/"+key);
                             Command command = JsonSerializer.deserialize(commandStr.getBytes(),Command.class);
                             TaskRequest taskRequest = getExecutionJobByCommandCode(command);
-                            persistenceEngine.update("", taskRequest);
+//                            persistenceEngine.update("", taskRequest);
                             zooKeeperClient.remove(CoreConfig.JOB_RESPONSE_CACHE_PATH+"/"+key);
                         }
                     } else {

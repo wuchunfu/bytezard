@@ -1,6 +1,7 @@
 package io.simforce.bytezard.coordinator.server.processor;
 
 import io.simforce.bytezard.common.entity.TaskRequest;
+import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.coordinator.server.cache.JobExecuteManager;
 import io.simforce.bytezard.remote.command.Command;
 import io.simforce.bytezard.remote.command.CommandCode;
@@ -11,7 +12,6 @@ import io.simforce.bytezard.remote.utils.JsonSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.google.common.base.Preconditions;
 
 import io.netty.channel.Channel;
@@ -32,7 +32,7 @@ public class JobExecuteResponseProcessor implements NettyEventProcessor {
                 CommandCode.JOB_EXECUTE_RESPONSE == command.getCode(),
                 String.format("invalid command type : %s", command.getCode()));
         JobExecuteResponseCommand jobExecuteResponseCommand = JsonSerializer.deserialize(command.getBody(), JobExecuteResponseCommand.class);
-        logger.info("jobExecuteResponseCommand : {}", JSONUtils.toJSONString(jobExecuteResponseCommand));
+        logger.info("jobExecuteResponseCommand : {}", JSONUtils.toJsonString(jobExecuteResponseCommand));
 
         TaskRequest taskRequest = jobExecuteManager.getExecutionJob(jobExecuteResponseCommand.getTaskId());
         if(taskRequest == null){

@@ -9,14 +9,14 @@ public interface CommandService  {
      * @param command
      * @return
      */
-    long save(Command command);
+    long insert(Command command);
 
     /**
      * updateById
      * @param command
      * @return
      */
-    int updateById(Command command);
+    int update(Command command);
 
     /**
      * SELECT BY ID

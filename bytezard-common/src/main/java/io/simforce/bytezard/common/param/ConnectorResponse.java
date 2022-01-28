@@ -17,8 +17,6 @@
 
 package io.simforce.bytezard.common.param;
 
-import io.simforce.bytezard.common.enums.Status;
-
 /**
  * OperatorResponse
  */
@@ -29,8 +27,6 @@ public class ConnectorResponse {
     private Object result;
 
     private String requestId;
-
-    private Status status;
 
     private String errorMsg;
 
@@ -56,14 +52,6 @@ public class ConnectorResponse {
 
     public void setRequestId(String requestId) {
         this.requestId = requestId;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 
     public String getErrorMsg() {

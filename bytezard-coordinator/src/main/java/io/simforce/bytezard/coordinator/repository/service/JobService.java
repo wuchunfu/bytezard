@@ -11,14 +11,14 @@ public interface JobService {
      * @param job
      * @return
      */
-    long save(Job job);
+    long insert(Job job);
 
     /**
      * updateById
      * @param job
      * @return
      */
-    int updateById(Job job);
+    int update(Job job);
 
     /**
      * SELECT BY ID
@@ -27,12 +27,7 @@ public interface JobService {
      */
     Job getById(long id);
 
-    /**
-     * 根据 flow definition id 获取 flow job definition 列表
-     * @param flowDefinitionId
-     * @return
-     */
-    List<Job> listByFlowDefinitionId(Long flowDefinitionId);
+    List<Job> listByProjectId(Long projectId);
 
     /**
      * delete by id

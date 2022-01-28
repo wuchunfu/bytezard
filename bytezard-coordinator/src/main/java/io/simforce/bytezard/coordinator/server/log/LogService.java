@@ -5,14 +5,12 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.druid.support.json.JSONUtils;
-
 import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.entity.LogResult;
+import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.coordinator.server.cache.JobExecuteManager;
 import io.simforce.bytezard.coordinator.server.channel.ClientChannel;
 import io.simforce.bytezard.coordinator.server.channel.ClientChannelManager;
-import io.simforce.bytezard.coordinator.server.recovery.PersistenceEngine;
 import io.simforce.bytezard.remote.command.Command;
 import io.simforce.bytezard.remote.command.log.GetLogBytesRequestCommand;
 import io.simforce.bytezard.remote.command.log.GetLogBytesResponseCommand;
@@ -30,12 +28,9 @@ public class LogService {
 
     private final ClientChannelManager clientChannelManager;
 
-    private final PersistenceEngine databasePersistenceEngine;
-
-    public LogService(JobExecuteManager jobExecuteManager,PersistenceEngine databasePersistenceEngine){
+    public LogService(JobExecuteManager jobExecuteManager) {
         this.jobExecuteManager = jobExecuteManager;
         this.clientChannelManager = ClientChannelManager.getInstance();
-        this.databasePersistenceEngine = databasePersistenceEngine;
     }
 
     public LogResult queryLog(long taskId, int offsetLine){
@@ -82,7 +77,7 @@ public class LogService {
 
         ViewLogRequestCommand viewLogRequestCommand = new ViewLogRequestCommand();
         viewLogRequestCommand.setPath(job.getLogPath());
-        logger.info("send command {}", JSONUtils.toJSONString(viewLogRequestCommand));
+        logger.info("send command {}", JSONUtils.toJsonString(viewLogRequestCommand));
         Command result = clientChannel.sendSync(viewLogRequestCommand.convert2Command(),10000);
         if(result != null){
             ViewLogResponseCommand command = JsonSerializer.deserialize(result.getBody(),ViewLogResponseCommand.class);
@@ -127,15 +122,11 @@ public class LogService {
 
     private TaskRequest getExecutionJob(long taskId) {
         TaskRequest job = jobExecuteManager.getExecutionJob(taskId);
-
         if(job == null || StringUtils.isEmpty(job.getLogPath())){
-            job = databasePersistenceEngine.getById(taskId);
-
-            if(job == null || StringUtils.isEmpty(job.getLogPath())){
-                logger.info("job {} is not exist",taskId);
-                return null;
-            }
+            logger.info("job {} is not exist",taskId);
+            return null;
         }
+
         return job;
     }
 }

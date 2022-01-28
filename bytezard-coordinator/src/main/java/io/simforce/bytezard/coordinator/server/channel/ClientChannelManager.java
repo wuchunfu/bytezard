@@ -14,17 +14,13 @@ public class ClientChannelManager {
 
     private final Logger logger = LoggerFactory.getLogger(ClientChannelManager.class);
 
-    private final ConcurrentHashMap<Host,ClientChannel> executors =
-                                                        new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Host,ClientChannel> executors = new ConcurrentHashMap<>();
 
-    private final ConcurrentHashMap<Host,ClientChannel> clients =
-                                                        new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Host,ClientChannel> clients = new ConcurrentHashMap<>();
 
-    private final ConcurrentHashMap<String,ClientChannel> ip2Executors =
-                                                        new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,ClientChannel> ip2Executors = new ConcurrentHashMap<>();
 
-    private final ConcurrentHashMap<String,ClientChannel> ip2Clients =
-                                                        new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,ClientChannel> ip2Clients = new ConcurrentHashMap<>();
 
     private ClientChannelManager(){}
 

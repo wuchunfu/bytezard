@@ -51,13 +51,12 @@ public class JobSubmitRequestProcessor implements NettyEventProcessor {
             return;
         }
 
-        long id = jobExecuteManager.getPersistenceEngine().persist("", taskRequest);
-        taskRequest.setTaskId(id);
+//        taskRequest.setTaskId(id);
         jobExecuteManager.addExecuteCommand(taskRequest);
         jobExecuteManager.putTaskId2ClientIpMap(
                 taskRequest.getTaskId(),ChannelUtils.toAddress(channel).getIp());
 
-        jobSubmitAckCommand.setTaskId(id);
+//        jobSubmitAckCommand.setTaskId(id);
         jobSubmitAckCommand.setCode(1);
         jobSubmitAckCommand.setMsg("submit job success");
         channel.writeAndFlush(jobSubmitAckCommand.convert2Command(command.getOpaque()));

@@ -11,14 +11,14 @@ public interface TaskService {
      * @param task
      * @return
      */
-    long save(Task task);
+    long insert(Task task);
 
     /**
      * updateById
      * @param task
      * @return
      */
-    int updateById(Task task);
+    int update(Task task);
 
     /**
      * SELECT BY ID
@@ -26,13 +26,6 @@ public interface TaskService {
      * @return
      */
     Task getById(long id);
-
-    /**
-     * 根据executionId获取job实例
-     * @param executionId
-     * @return
-     */
-    Task getByExecutionId(long executionId);
 
     /**
      * 根据projectId获取task列表

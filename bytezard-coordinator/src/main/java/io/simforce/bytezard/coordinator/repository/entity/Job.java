@@ -3,46 +3,68 @@ package io.simforce.bytezard.coordinator.repository.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+@TableName("bytezard_job")
 public class Job implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
+    @TableId(type= IdType.ASSIGN_ID)
     private Long id;
 
+    @TableField(value = "name")
     private String name;
 
     /**
      * local/yarn/k8s
      */
+    @TableField(value = "execute_platform_type")
     private String executePlatformType;
 
     /**
      * {@link io.simforce.bytezard.common.entity.JobParameter}
      */
+    @TableField(value = "parameter")
     private String parameter;
 
+    @TableField(value = "project_id")
     private Long projectId;
 
+    @TableField(value = "retry_times")
     private Integer retryTimes;
 
+    @TableField(value = "retry_interval")
     private Integer retryInterval;
 
+    @TableField(value = "timeout")
     private Integer timeout;
 
+    @TableField(value = "timeout_strategy")
     private Integer timeoutStrategy;
 
+    @TableField(value = "tenant_code")
     private String tenantCode;
 
+    @TableField(value = "resources")
     private String resources;
 
+    @TableField(value = "version")
     private Long version;
 
+    @TableField(value = "create_by")
     private Long createBy;
 
+    @TableField(value = "create_time")
     private LocalDateTime createTime;
 
+    @TableField(value = "update_by")
     private Long updateBy;
 
+    @TableField(value = "update_time")
     private LocalDateTime updateTime;
 
     public Long getId() {

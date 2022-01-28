@@ -3,23 +3,34 @@ package io.simforce.bytezard.coordinator.repository.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+@TableName("bytezard_project")
 public class Project implements Serializable {
     private static final long serialVersionUID = -1L;
 
+    @TableId(type= IdType.ASSIGN_ID)
     private Long id;
 
+    @TableField(value = "name")
     private String name;
 
-    private String description;
-
+    @TableField(value = "version")
     private String version;
 
+    @TableField(value = "create_by")
     private Long createBy;
 
+    @TableField(value = "create_time")
     private LocalDateTime createTime;
 
+    @TableField(value = "update_by")
     private Long updateBy;
 
+    @TableField(value = "update_time")
     private LocalDateTime updateTime;
 
     public Long getId() {
@@ -36,14 +47,6 @@ public class Project implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getVersion() {

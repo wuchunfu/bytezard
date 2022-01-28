@@ -27,7 +27,7 @@
         <commons.version>1.0.0</commons.version>
         <slf4j.api.version>1.7.5</slf4j.api.version>
         <slf4j.log4j12.version>1.7.5</slf4j.log4j12.version>
-        <jackson.version>2.6.7</jackson.version>
+        <jackson.version>2.10.5</jackson.version>
         <oshi.core.version>3.5.0</oshi.core.version>
         <commons.collections4.version>4.1</commons.collections4.version>
         <guava.version>20.0</guava.version>
@@ -46,7 +46,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <druid.version>1.1.13</druid.version>
-        <mybatisplus.version>3.0.7.1</mybatisplus.version>
         <swagger.version>1.9.3</swagger.version>
         <springfox.version>2.9.2</springfox.version>
         <swagger-models.version>1.5.24</swagger-models.version>
@@ -57,9 +56,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <guice.version>4.2.0</guice.version>
-        <mybatis.guice.version>3.10</mybatis.guice.version>
-        <mybatis.version>3.5.0</mybatis.version>
-        <mybatis.pagehelper.version>5.2.0</mybatis.pagehelper.version>
         <netty.version>4.1.42.Final</netty.version>
         <druid.version>1.1.13</druid.version>
         <logback.version>1.2.3</logback.version>
@@ -72,10 +68,64 @@
         <jersey.version>1.19</jersey.version>
         <jetty.version>8.2.0.v20160908</jetty.version>
         <jcommander.version>1.81</jcommander.version>
+
+        <spring.boot.version>2.5.6</spring.boot.version>
+        <mybatis-plus.version>3.5.0</mybatis-plus.version>
+        <swagger.version>2.9.2</swagger.version>
+        <lombok.version>1.18.0</lombok.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>guava</artifactId>
+                        <groupId>com.google.guava</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>2.0.1.Final</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>4.2</version>
+            </dependency>
 
             <dependency>
                 <groupId>io.simforce.bytezard</groupId>
@@ -92,6 +142,18 @@
             <dependency>
                 <groupId>io.simforce.bytezard</groupId>
                 <artifactId>bytezard-engine-executor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.simforce.bytezard</groupId>
+                <artifactId>bytezard-engine-spark-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.simforce.bytezard</groupId>
+                <artifactId>bytezard-engine-spark-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -123,24 +185,6 @@
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
                 <version>${guice.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis-guice</artifactId>
-                <version>${mybatis.guice.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis</artifactId>
-                <version>${mybatis.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper</artifactId>
-                <version>${mybatis.pagehelper.version}</version>
             </dependency>
 
             <dependency>
@@ -271,12 +315,6 @@
                 <groupId>org.mindrot</groupId>
                 <artifactId>jbcrypt</artifactId>
                 <version>0.3m</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.jsqlparser</groupId>
-                <artifactId>jsqlparser</artifactId>
-                <version>1.2</version>
             </dependency>
 
             <dependency>
@@ -427,32 +465,6 @@
                 <version>${logback.version}</version>
             </dependency>
 
-            <!-- Jersey -->
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-servlet</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-json</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-client</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-
-            <!-- Jetty -->
-            <dependency>
-                <groupId>org.eclipse.jetty.aggregate</groupId>
-                <artifactId>jetty-all-server</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
@@ -467,6 +479,15 @@
 
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
     <build>
         <pluginManagement>

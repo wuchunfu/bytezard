@@ -1,5 +1,6 @@
 package io.simforce.bytezard.coordinator.server.processor;
 
+import io.simforce.bytezard.common.utils.JSONUtils;
 import io.simforce.bytezard.coordinator.server.channel.ClientChannel;
 import io.simforce.bytezard.coordinator.server.channel.ClientChannelManager;
 import io.simforce.bytezard.remote.command.Command;
@@ -13,7 +14,6 @@ import io.simforce.bytezard.remote.utils.JsonSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.google.common.base.Preconditions;
 
 import io.netty.channel.Channel;
@@ -37,7 +37,7 @@ public class PingProcessor implements NettyEventProcessor {
         PingCommand pingCommand =
                 JsonSerializer.deserialize(command.getBody(),PingCommand.class);
 
-        logger.info(JSONUtils.toJSONString(pingCommand));
+        logger.info(JSONUtils.toJsonString(pingCommand));
 
         ClientChannel clientChannel = new ClientChannel();
         clientChannel.setChannel(channel);
