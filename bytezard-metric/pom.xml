@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bytezard-function</artifactId>
+    <artifactId>bytezard-metric</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>bytezard-function-api</module>
-        <module>bytezard-function-plugins</module>
+        <module>bytezard-metric-api</module>
+        <module>bytezard-metric-plugins</module>
     </modules>
 
     <dependencies>
@@ -23,5 +23,6 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
+
 
 </project>

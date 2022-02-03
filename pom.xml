@@ -13,13 +13,13 @@
         <module>bytezard-server</module>
         <module>bytezard-engine</module>
         <module>bytezard-cli</module>
-        <module>bytezard-function</module>
         <module>bytezard-connector</module>
         <module>bytezard-ui</module>
         <module>bytezard-client</module>
         <module>bytezard-coordinator</module>
         <module>bytezard-executor</module>
         <module>bytezard-remote</module>
+        <module>bytezard-metric</module>
     </modules>
 
     <properties>

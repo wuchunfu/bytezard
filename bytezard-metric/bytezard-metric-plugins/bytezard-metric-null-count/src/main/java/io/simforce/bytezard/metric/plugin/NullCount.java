@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package io.simforce.bytezard.function;
+package io.simforce.bytezard.metric.plugin;
 
 import io.simforce.bytezard.common.entity.ExecuteSql;
-import io.simforce.bytezard.function.api.SqlFunction;
+import io.sinforce.bytezard.metric.api.SqlMetric;
 
-public class NullCheck implements SqlFunction {
+public class NullCount implements SqlMetric {
 
     @Override
     public String getName() {

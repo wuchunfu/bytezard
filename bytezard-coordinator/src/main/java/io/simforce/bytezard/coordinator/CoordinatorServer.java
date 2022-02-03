@@ -1,16 +1,11 @@
 package io.simforce.bytezard.coordinator;
 
-import org.apache.commons.lang3.StringUtils;
-
 import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-
 import io.simforce.bytezard.common.elector.LeaderElectionAgent;
 import io.simforce.bytezard.common.utils.Stopper;
 import io.simforce.bytezard.common.utils.ThreadUtils;
@@ -40,7 +35,6 @@ import io.simforce.bytezard.remote.command.CommandCode;
 import io.simforce.bytezard.remote.config.NettyServerConfig;
 
 @SpringBootApplication
-//@ComponentScan("io.simforce.bytezard.coordinator")
 public class CoordinatorServer {
 
     private static final Logger logger = LoggerFactory.getLogger(CoordinatorServer.class);

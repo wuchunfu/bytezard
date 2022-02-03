@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package io.simforce.bytezard.function.api;
+package io.sinforce.bytezard.metric.api;
 
 import io.simforce.bytezard.common.entity.ExecuteSql;
 import io.simforce.bytezard.common.spi.SPI;
 
 @SPI
-public interface SqlFunction {
+public interface SqlMetric {
 
     String getName();
 
