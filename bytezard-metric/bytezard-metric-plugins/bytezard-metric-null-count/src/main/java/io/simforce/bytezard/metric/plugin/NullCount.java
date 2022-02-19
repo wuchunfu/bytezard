@@ -17,14 +17,13 @@
 
 package io.simforce.bytezard.metric.plugin;
 
-import io.simforce.bytezard.common.entity.ExecuteSql;
 import io.sinforce.bytezard.metric.api.SqlMetric;
 
 public class NullCount implements SqlMetric {
 
     @Override
     public String getName() {
-        return "NullCheck";
+        return "NullCount";
     }
 
     @Override
@@ -33,20 +32,17 @@ public class NullCount implements SqlMetric {
     }
 
     @Override
-    public ExecuteSql getInvalidateItems() {
-        ExecuteSql executeSql = new ExecuteSql();
-        executeSql.setResultTable("invalidate_items");
-        executeSql.setSql("SELECT * FROM ${src_table} WHERE (${src_field} is null or ${src_field} = '') AND (${src_filter})");
-        executeSql.setErrorOutput(true);
-        return executeSql;
+    public String getInvalidateItemsSql() {
+        return "SELECT * FROM ${src_table} WHERE (${src_field} is null or ${src_field} = '') AND (${src_filter})";
     }
 
     @Override
-    public ExecuteSql getActualValue() {
-        ExecuteSql executeSql = new ExecuteSql();
-        executeSql.setResultTable("invalidate_count");
-        executeSql.setSql("SELECT COUNT(*) AS invalidate_count FROM invalidate_items");
-        executeSql.setErrorOutput(false);
-        return executeSql;
+    public String getActualValueSql() {
+        return "SELECT COUNT(*) AS invalidate_count FROM invalidate_items";
+    }
+
+    @Override
+    public boolean isInvalidateItemsCanOutput() {
+        return true;
     }
 }

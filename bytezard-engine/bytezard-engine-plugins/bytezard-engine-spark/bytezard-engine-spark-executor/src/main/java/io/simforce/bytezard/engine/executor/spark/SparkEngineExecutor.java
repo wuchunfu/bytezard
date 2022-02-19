@@ -22,7 +22,7 @@ public class SparkEngineExecutor implements EngineExecutor {
         //读取每个引擎特有参数
         //读取数据质量检查标准参数
         BytezardConfiguration configuration =
-                JSONUtils.parseObject(taskRequest.getBytezardConfiguration(),BytezardConfiguration.class);
+                JSONUtils.parseObject(taskRequest.getEngineParameter(),BytezardConfiguration.class);
         configurationParser.parse(configuration);
         //将标准参数转换为引擎可执行参数,生成一个application.conf
         //执行检查任务

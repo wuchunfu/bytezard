@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 
 import io.simforce.bytezard.common.entity.TaskRequest;
 import io.simforce.bytezard.common.entity.ProcessResult;
-import io.simforce.bytezard.common.spi.SPI;
+import io.simforce.bytezard.spi.SPI;;
 
 @SPI
 public interface EngineExecutor {

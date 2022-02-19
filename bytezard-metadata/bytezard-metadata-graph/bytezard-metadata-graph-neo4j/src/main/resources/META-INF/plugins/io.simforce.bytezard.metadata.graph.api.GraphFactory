@@ -1,0 +1,1 @@
+neo4j-graph=io.simforce.bytezard.metadata.graph.mysql.Neo4jBoltGraphFactory

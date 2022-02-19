@@ -9,7 +9,7 @@ public enum ResourceSchedulePlatformType {
      */
     LOCAL(0,"local"),
     YARN(1,"yarn"),
-    MESOS(2,"mesos");
+    K8S(2,"k8s");
 
     ResourceSchedulePlatformType(int code,String description){
         this.code = code;

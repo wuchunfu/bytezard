@@ -18,7 +18,7 @@
 package io.sinforce.bytezard.metric.api;
 
 import io.simforce.bytezard.common.entity.ExecuteSql;
-import io.simforce.bytezard.common.spi.SPI;
+import io.simforce.bytezard.spi.SPI;;
 
 @SPI
 public interface SqlMetric {
@@ -27,7 +27,25 @@ public interface SqlMetric {
 
     String getType();
 
-    ExecuteSql getInvalidateItems();
+    String getInvalidateItemsSql();
 
-    ExecuteSql getActualValue();
+    boolean isInvalidateItemsCanOutput();
+
+    String getActualValueSql();
+
+    default ExecuteSql getInvalidateItems() {
+        ExecuteSql executeSql = new ExecuteSql();
+        executeSql.setResultTable("invalidate_items");
+        executeSql.setSql(getInvalidateItemsSql());
+        executeSql.setErrorOutput(isInvalidateItemsCanOutput());
+        return executeSql;
+    }
+
+    default ExecuteSql getActualValue() {
+        ExecuteSql executeSql = new ExecuteSql();
+        executeSql.setResultTable("invalidate_count");
+        executeSql.setSql(getActualValueSql());
+        executeSql.setErrorOutput(false);
+        return executeSql;
+    }
 }

@@ -23,10 +23,10 @@ public class JobDispatcherImpl implements IJobDispatcher<ExecuteResult> {
 
     private final ClientChannelManager clientChannelManager;
 
-    private final ExecutorManager executorManager;
+    private final ExecutorSelector executorSelector;
 
     public JobDispatcherImpl(CoordinatorConfiguration configuration){
-        executorManager = new ExecutorManager(configuration);
+        executorSelector = new ExecutorSelector(configuration);
         clientChannelManager = ClientChannelManager.getInstance();
     }
 
@@ -105,7 +105,7 @@ public class JobDispatcherImpl implements IJobDispatcher<ExecuteResult> {
         int getClientsRetryNums = 3;
         while(getClientsRetryNums > 0){
             try{
-                clientChannel = executorManager
+                clientChannel = executorSelector
                         .select(clientChannelManager.getExecuteNodes(context.getRequestClientType()));
                 channel = clientChannel.getChannel();
                 break;

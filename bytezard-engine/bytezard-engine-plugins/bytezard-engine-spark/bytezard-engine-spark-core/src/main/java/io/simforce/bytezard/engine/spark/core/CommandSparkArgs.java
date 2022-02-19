@@ -26,13 +26,13 @@ public class CommandSparkArgs {
     @Parameter(names = {"-c", "--config"},
         description = "config file",
         required = true)
-    private String configFile = "application.conf";
+    private final String configFile = "application.conf";
 
     @Parameter(names = {"-e", "--deploy-mode"},
         description = "spark deploy mode",
         required = true,
         validateWith = DeployModeValidator.class)
-    private String deployMode = "client";
+    private final String deployMode = "client";
 
     @Parameter(names = {"-m", "--master"},
         description = "spark master",
@@ -45,7 +45,7 @@ public class CommandSparkArgs {
 
     @Parameter(names = {"-t", "--check"},
         description = "check config")
-    private boolean testConfig = false;
+    private final boolean testConfig = false;
 
     public String getConfigFile() {
         return configFile;

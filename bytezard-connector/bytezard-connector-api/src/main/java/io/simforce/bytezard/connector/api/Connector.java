@@ -19,7 +19,7 @@ package io.simforce.bytezard.connector.api;
 
 import io.simforce.bytezard.common.param.ConnectorRequestParam;
 import io.simforce.bytezard.common.param.ConnectorResponse;
-import io.simforce.bytezard.common.spi.SPI;
+import io.simforce.bytezard.spi.SPI;
 
 @SPI
 public interface Connector {
