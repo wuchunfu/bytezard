@@ -15,6 +15,7 @@
         <module>bytezard-metadata-graph-api</module>
         <module>bytezard-metadata-graph-mysql</module>
         <module>bytezard-metadata-graph-neo4j</module>
+        <module>bytezard-metadata-graph-impl</module>
     </modules>
 
     <properties>

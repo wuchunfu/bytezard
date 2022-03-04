@@ -1,1 +1,1 @@
-mysql-graphg=io.simforce.bytezard.metadata.graph.mysql.MysqlGraphFactory
+mysql-graphg=io.simforce.bytezard.metadata.graph.mysql.MysqlIGraphFactory

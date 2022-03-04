@@ -194,6 +194,12 @@
 
             <dependency>
                 <groupId>io.simforce.bytezard</groupId>
+                <artifactId>bytezard-metadata-graph-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.simforce.bytezard</groupId>
                 <artifactId>bytezard-metadata-graph-mysql</artifactId>
                 <version>${project.version}</version>
             </dependency>
