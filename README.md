@@ -1,3 +1,3 @@
-# Bytezard (白泽)
+# DataVines
 
-Bytezard is a data observability system.
+DataVines is a data observability system.

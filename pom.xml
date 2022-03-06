@@ -4,24 +4,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.simforce.bytezard</groupId>
-    <artifactId>bytezard</artifactId>
+    <groupId>io.datavines</groupId>
+    <artifactId>datavines</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
     <modules>
-        <module>bytezard-common</module>
-        <module>bytezard-engine</module>
-        <module>bytezard-cli</module>
-        <module>bytezard-connector</module>
-        <module>bytezard-ui</module>
-        <module>bytezard-client</module>
-        <module>bytezard-coordinator</module>
-        <module>bytezard-executor</module>
-        <module>bytezard-remote</module>
-        <module>bytezard-metric</module>
-        <module>bytezard-notification</module>
-        <module>bytezard-metadata</module>
-        <module>bytezard-spi</module>
+        <module>datavines-common</module>
+        <module>datavines-engine</module>
+        <module>datavines-cli</module>
+        <module>datavines-connector</module>
+        <module>datavines-ui</module>
+        <module>datavines-client</module>
+        <module>datavines-coordinator</module>
+        <module>datavines-executor</module>
+        <module>datavines-remote</module>
+        <module>datavines-metric</module>
+        <module>datavines-notification</module>
+        <module>datavines-metadata</module>
+        <module>datavines-spi</module>
     </modules>
 
     <properties>
@@ -133,86 +133,86 @@
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-engine-api</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-engine-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-engine-core</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-engine-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-engine-executor</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-engine-executor</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-engine-spark-core</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-engine-spark-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-engine-spark-api</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-engine-spark-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-connector-api</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-connector-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-common</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-remote</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-remote</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-metadata-model</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-metadata-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-metadata-graph-api</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-metadata-graph-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-metadata-graph-impl</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-metadata-graph-impl</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-metadata-graph-mysql</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-metadata-graph-mysql</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-metadata-graph-neo4j</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-metadata-graph-neo4j</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.simforce.bytezard</groupId>
-                <artifactId>bytezard-spi</artifactId>
+                <groupId>io.datavines</groupId>
+                <artifactId>datavines-spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
